@@ -12,9 +12,10 @@ typedef enum {
     ND_ROOT, ND_AND, ND_OR, ND_XOR, ND_NOT, ND_SIGNAL_OFF, ND_SIGNAL_ON, ND_END
 } NodeKind;
 
-char *node_kind_name[ND_END + 1];
 int node_kind_start;
 int node_kind_end;
+
+char *node_kind_name[ND_END + 1];
 
 typedef struct node {
     struct node *left;

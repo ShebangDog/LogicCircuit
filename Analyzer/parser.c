@@ -14,27 +14,32 @@
 // <binary> ::= and | xor | or
 // <signal> ::= 1 | 0
 
+Token *head;
+
 void parse(Token *token) {
-    parser.tree = circuit(token->nextToken);
-    printf("last token is Token(value: %s, kind: %s)\n", token->value, token_kind_name[token->kind]);
+    head = token->nextToken;
+    parser.tree = circuit();
+    printf("last token is Token(value: %s, kind: %s)\n", head->value, token_kind_name[head->kind]);
 }
 
-unsigned consume_token_parser(Token *token, char *string);
+unsigned consume_token_parser(char *string);
 
-void expect_token_parser(Token *token, char *string);
+void expect_token_parser(char *string);
 
 // <circuit> ::= <primary> | <primary> <binary> <circuit>
-static Node *circuit(Token *token) {
+static Node *circuit() {
     puts("circuit");
 
-    if (equal_end_token(*token)) return NULL;
+    if (equal_end_token(*head)) return NULL;
 
-    Node *node = primary(token);
+    Node *node = primary();
 
-    *token = *token->nextToken;
-    if (isbinary_token(*token)) {
-        printf("token(value: %s kind: %s)\n", token->value, token_kind_name[token->kind]);
-        node = new_node_binary(token_to_node_kind(*token), node, circuit(token->nextToken));
+    if (isbinary_token(*head)) {
+        printf("token(value: %s kind: %s)\n", head->value, token_kind_name[head->kind]);
+        NodeKind kind = token_to_node_kind(*head);
+        head = head->nextToken;
+
+        node = new_node_binary(kind, node, circuit());
     }
 
     return node;
@@ -42,37 +47,51 @@ static Node *circuit(Token *token) {
 }
 
 // <primary> ::= <signed-signal> | "(" <circuit> ")"
-static Node *primary(Token *token) {
+static Node *primary() {
     puts("primary");
     Node *node;
 
-    if (consume_token_parser(token, "(")) {
-        node = circuit(token);
-        expect_token_parser(token, ")");
+    if (consume_token_parser("(")) {
+        node = circuit();
+        expect_token_parser(")");
     } else {
-        node = signed_signal(token);
+        node = signed_signal();
     }
 
     return node;
 }
 
-static Node *signed_signal(Token *token) {
+static Node *signed_signal() {
     puts("signed-signal");
     Node *node = NULL;
 
-    printf("token(value: %s kind: %s)\n", token->value, token_kind_name[token->kind]);
-    if (issignal_token(*token)) {
+    printf("token(value: %s kind: %s)\n", head->value, token_kind_name[head->kind]);
+
+    if (issignal_token(*head)) {
         puts("issignal");
         return ({
-            node = signal(token);
+            node = signal();
             node;
         });
     }
 
-    if (isunary_token(*token)) {
+    if (isunary_token(*head)) {
         puts("isunary");
         return ({
-            node = new_node_signed_signal(token_to_node_kind(*token), signed_signal(token->nextToken));
+            NodeKind kind_unary = token_to_node_kind(*head);
+            head = head->nextToken;
+
+            node = new_node_signed_signal(kind_unary, signed_signal());
+            if (issignal_token(*head)) {
+                puts("issignal");
+                return ({
+                    NodeKind kind_signal = token_to_node_kind(*head);
+                    head = head->nextToken;
+
+                    node = new_node_signed_signal(kind_signal, node);
+                    node;
+                });
+            }
 
             node;
         });
@@ -83,9 +102,10 @@ static Node *signed_signal(Token *token) {
 
 }
 
-static Node *signal(Token *token) {
+static Node *signal() {
     puts("signal");
-    int value = token->value[0] - '0';
+    int value = head->value[0] - '0';
+    head = head->nextToken;
 
     return new_node_signal(value);
 }
@@ -94,20 +114,20 @@ unsigned equal_parser(char *s1, char *s2, unsigned len) {
     return !strncmp(s1, s2, len);
 }
 
-unsigned consume_token_parser(Token *token, char *string) {
-    if (!equal_parser(token->value, string, strlen(string))) {
+unsigned consume_token_parser(char *string) {
+    if (!equal_parser(head->value, string, strlen(string))) {
         return false;
     }
 
-    *token = *token->nextToken;
+    *head = *head->nextToken;
     return true;
 }
 
 // if got different value it should display error
-void expect_token_parser(Token *token, char *string) {
-    if (consume_token_parser(token, string)) return;
+void expect_token_parser(char *string) {
+    if (consume_token_parser(string)) return;
 
-    printf("error expect_token_parser / expect [%s] but got [token (value: %s, kind: %s)]\n", string, token->value,
-           token_kind_name[token->kind]);
+    printf("error expect_token_parser / expect [%s] but got [token (value: %s, kind: %s)]\n", string, head->value,
+           token_kind_name[head->kind]);
     exit(1);
 }

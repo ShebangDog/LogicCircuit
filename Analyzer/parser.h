@@ -21,16 +21,16 @@ struct Parser {
 
 void parse(Token *token);
 
-static Node *circuit(Token *token);
+static Node *circuit();
 
-static Node *primary(Token *token);
+static Node *primary();
 
-static Node *signed_signal(Token *token);
+static Node *signed_signal();
 
-static Node *unary(Token *token);
+static Node *unary();
 
-static Node *binary(Token *token);
+static Node *binary();
 
-static Node *signal(Token *token);
+static Node *signal();
 
 #endif //LOGICCIRCUIT_PARSER_H
