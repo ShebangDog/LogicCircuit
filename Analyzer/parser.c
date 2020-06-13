@@ -7,7 +7,7 @@
 #include "parser.h"
 #include "../Utility/converter.h"
 
-// <circuit> ::= <primary> | <primary> <binary> <primary>
+// <circuit> ::= <primary> | <primary> <binary> <circuit>
 // <primary> ::= <signed-signal> | "(" <circuit> ")"
 // <signed-signal> ::= <signal> | <unary> <signed-signal>
 // <unary> ::= not
@@ -17,14 +17,27 @@
 Token *head;
 
 void parse(Token *token) {
-    head = token->nextToken;
-    parser.tree = circuit();
-    printf("last token is Token(value: %s, kind: %s)\n", head->value, token_kind_name[head->kind]);
+    head = token;
+    parser.tree = block();
 }
 
 unsigned consume_token_parser(char *string);
 
 void expect_token_parser(char *string);
+
+// <block> ::= '{' <circuit> '}'
+static Node *block() {
+    Node *result;
+    if (consume_token_parser(ROOT_TOKEN.value)) {
+        result = circuit();
+        if (!equal_end_token(*head)) exit(1);
+
+        return result;
+    }
+
+    puts("error block");
+    exit(1);
+}
 
 // <circuit> ::= <primary> | <primary> <binary> <circuit>
 static Node *circuit() {

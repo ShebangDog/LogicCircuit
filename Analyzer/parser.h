@@ -21,6 +21,8 @@ struct Parser {
 
 void parse(Token *token);
 
+static Node *block();
+
 static Node *circuit();
 
 static Node *primary();
