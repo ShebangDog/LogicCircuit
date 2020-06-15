@@ -12,8 +12,6 @@ void print_token(Token *token);
 
 void print_node(Node* node);
 
-unsigned eval(Node *node);
-
 void test();
 
 #endif //LOGICCIRCUIT_DEBUG_H
