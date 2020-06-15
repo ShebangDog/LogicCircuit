@@ -24,7 +24,7 @@ typedef struct Token {
 } Token;
 
 static Token ROOT_TOKEN = {.kind = T_ROOT, .value = "identify_root"};
-static Token END_TOKEN = {.kind = T_END, .value = "identify_end", .nextToken = NULL};
+static Token END_TOKEN = {.kind = T_END, .value = "identify_end"};
 
 int token_kind_start;
 int token_kind_end;

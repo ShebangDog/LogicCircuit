@@ -41,14 +41,11 @@ static Node *block() {
 
 // <circuit> ::= <primary> | <primary> <binary> <circuit>
 static Node *circuit() {
-    puts("circuit");
-
     if (equal_end_token(*head)) return NULL;
 
     Node *node = primary();
 
     if (isbinary_token(*head)) {
-        printf("token(value: %s kind: %s)\n", head->value, token_kind_name[head->kind]);
         NodeKind kind = token_to_node_kind(*head);
         head = head->nextToken;
 
@@ -61,7 +58,6 @@ static Node *circuit() {
 
 // <primary> ::= <signed-signal> | "(" <circuit> ")"
 static Node *primary() {
-    puts("primary");
     Node *node;
 
     if (consume_token_parser("(")) {
@@ -75,13 +71,9 @@ static Node *primary() {
 }
 
 static Node *signed_signal() {
-    puts("signed-signal");
     Node *node = NULL;
 
-    printf("token(value: %s kind: %s)\n", head->value, token_kind_name[head->kind]);
-
     if (issignal_token(*head)) {
-        puts("issignal");
         return ({
             node = signal();
             node;
@@ -89,14 +81,12 @@ static Node *signed_signal() {
     }
 
     if (isunary_token(*head)) {
-        puts("isunary");
         return ({
             NodeKind kind_unary = token_to_node_kind(*head);
             head = head->nextToken;
 
             node = new_node_signed_signal(kind_unary, signed_signal());
             if (issignal_token(*head)) {
-                puts("issignal");
                 return ({
                     NodeKind kind_signal = token_to_node_kind(*head);
                     head = head->nextToken;
@@ -116,7 +106,6 @@ static Node *signed_signal() {
 }
 
 static Node *signal() {
-    puts("signal");
     int value = head->value[0] - '0';
     head = head->nextToken;
 

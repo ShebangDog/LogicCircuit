@@ -5,6 +5,10 @@
 #ifndef LOGICCIRCUIT_OPERATOR_H
 #define LOGICCIRCUIT_OPERATOR_H
 
+#include "signal.h"
+
+#define NONE_OPERATOR {.name="none_operator",.function=NULL}
+
 enum Binary {
     and, or, xor
 };
@@ -12,6 +16,16 @@ enum Binary {
 enum Unary {
     not
 };
+
+typedef struct {
+    char name[16];
+
+    union {
+        Signal (*binary)(Signal, Signal);
+
+        Signal (*unary)(Signal);
+    } function;
+} Operator;
 
 char *binary_name[xor + 1];
 char *unary_name[not + 1];
@@ -21,5 +35,13 @@ int unary_start;
 
 int binary_end;
 int unary_end;
+
+Signal not_operator(Signal signal);
+
+Signal or_operator(Signal left, Signal right);
+
+Signal and_operator(Signal left, Signal right);
+
+Signal xor_operator(Signal left, Signal right);
 
 #endif //LOGICCIRCUIT_OPERATOR_H
