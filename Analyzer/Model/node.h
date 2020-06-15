@@ -48,6 +48,6 @@ unsigned equal_root_node(Node node);
 
 unsigned equal_end_node(Node node);
 
-Signal signal_of(NodeKind kind);
+Signal signal_of(Node node);
 
 #endif //LOGICCIRCUIT_NODE_H

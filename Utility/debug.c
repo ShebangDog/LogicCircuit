@@ -71,7 +71,7 @@ void _eval(Node *node, char *stack) {
     }
 
     if (issignal_node(*node)) {
-        sprintf(stack, "%s%u", stack, signal_of(node->kind).value);
+        sprintf(stack, "%s%u", stack, signal_of(*node).value);
         return;
     }
 

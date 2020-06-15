@@ -114,7 +114,8 @@ unsigned equal_end_node(Node node) {
     return node.kind == ND_END;
 }
 
-Signal signal_of(NodeKind kind) {
+Signal signal_of(Node node) {
+    NodeKind kind = node.kind;
     if (kind == ND_SIGNAL_ON || kind == ND_SIGNAL_OFF) {
         return kind == ND_SIGNAL_ON ? on : off;
     } else {
