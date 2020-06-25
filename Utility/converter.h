@@ -10,6 +10,4 @@
 
 NodeKind token_to_node_kind(Token token);
 
-unsigned equal_converter(char *s1, char *s2, unsigned len);
-
 #endif //LOGICCIRCUIT_CONVERTER_H

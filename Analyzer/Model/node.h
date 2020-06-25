@@ -42,8 +42,6 @@ unsigned isbinary_node(Node node);
 
 unsigned isunary_node(Node node);
 
-unsigned equal_node(char *s1, char *s2, unsigned len);
-
 unsigned equal_root_node(Node node);
 
 unsigned equal_end_node(Node node);

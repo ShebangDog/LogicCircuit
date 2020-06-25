@@ -3,6 +3,7 @@
 //
 
 #include "converter.h"
+#include "string_util.h"
 #include <string.h>
 
 NodeKind token_to_node_kind(Token token) {
@@ -10,11 +11,12 @@ NodeKind token_to_node_kind(Token token) {
     if (token.kind == T_END) return ND_END;
 
     if (token.kind == T_SIGNAL) return token.value[0] == '1' ? ND_SIGNAL_ON : ND_SIGNAL_OFF;
+    if (token.kind == T_BRACKET) return token.value[0] == '(' ? ND_OPENING_BRACKET : ND_CLOSING_BRACKET;
     if (token.kind == T_OPERATOR) {
         char *p = token.value;
 
         for (int i = binary_start; i < binary_end + 1; ++i) {
-            if (!equal_converter(binary_name[i], p, strlen(binary_name[i]))) continue;
+            if (!equal_substring(binary_name[i], p, strlen(binary_name[i]))) continue;
 
             if (i == and) return ND_AND;
             if (i == or) return ND_OR;
@@ -25,7 +27,7 @@ NodeKind token_to_node_kind(Token token) {
         }
 
         for (int i = unary_start; i < unary_end + 1; ++i) {
-            if (!equal_converter(unary_name[i], p, strlen(unary_name[i]))) continue;
+            if (!equal_substring(unary_name[i], p, strlen(unary_name[i]))) continue;
 
             if (i == not) return ND_NOT;
 
@@ -39,8 +41,4 @@ NodeKind token_to_node_kind(Token token) {
 
     printf("error token_to_node_kind / token: {value: %s kind: %s}\n", token.value, token_kind_name[token.kind]);
     exit(1);
-}
-
-unsigned equal_converter(char *s1, char *s2, unsigned len) {
-    return !strncmp(s1, s2, len);
 }

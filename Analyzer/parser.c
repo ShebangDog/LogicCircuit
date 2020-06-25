@@ -6,6 +6,7 @@
 #include "Model/token.h"
 #include "parser.h"
 #include "../Utility/converter.h"
+#include "../Utility/string_util.h"
 
 // <circuit> ::= <primary> | <primary> <binary> <circuit>
 // <primary> ::= <signed-signal> | "(" <circuit> ")"
@@ -115,12 +116,8 @@ static Node *signal() {
     return new_node_signal(value);
 }
 
-unsigned equal_parser(char *s1, char *s2, unsigned len) {
-    return !strncmp(s1, s2, len);
-}
-
 unsigned consume_token_parser(char *string) {
-    if (!equal_parser(head->value, string, strlen(string))) {
+    if (!equal_substring(head->value, string, strlen(string))) {
         return false;
     }
 

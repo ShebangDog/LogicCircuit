@@ -3,6 +3,7 @@
 //
 
 #include "token.h"
+#include "../../Utility/string_util.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -20,10 +21,6 @@ Token *new_token(Token token, Token *parent) {
     return t;
 }
 
-unsigned equal_token(char *s1, char *s2, unsigned len) {
-    return !strncmp(s1, s2, len);
-}
-
 unsigned equal_root_token(Token token) {
     return token.kind == ROOT_TOKEN.kind;
 }
@@ -35,7 +32,7 @@ unsigned equal_end_token(Token token) {
 unsigned isbinary_token(Token token) {
     if (token.kind == T_OPERATOR) {
         for (int i = binary_start; i < binary_end + 1; ++i) {
-            if (equal_token(binary_name[i], token.value, strlen(token.value))) return true;
+            if (equal_substring(binary_name[i], token.value, strlen(token.value))) return true;
         }
     }
 
@@ -45,7 +42,7 @@ unsigned isbinary_token(Token token) {
 unsigned isunary_token(Token token) {
     if (token.kind == T_OPERATOR) {
         for (int i = unary_start; i < unary_end + 1; ++i) {
-            if (equal_token(unary_name[i], token.value, strlen(token.value))) return true;
+            if (equal_substring(unary_name[i], token.value, strlen(token.value))) return true;
         }
     }
 

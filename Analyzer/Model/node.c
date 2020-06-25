@@ -5,6 +5,7 @@
 #include "node.h"
 #include "../../Utility/converter.h"
 #include "operator.h"
+#include "../../Utility/string_util.h"
 #include <string.h>
 
 char *node_kind_name[ND_END + 1] = {
@@ -90,7 +91,7 @@ unsigned isbinary_node(Node node) {
     NodeKind kind = node.kind;
 
     for (int i = binary_start; i < binary_end + 1; ++i) {
-        if (equal_node(binary_name[i], node_kind_name[kind], strlen(node_kind_name[kind]))) return true;
+        if (equal_substring(binary_name[i], node_kind_name[kind], strlen(node_kind_name[kind]))) return true;
     }
 
     return false;
@@ -100,14 +101,10 @@ unsigned isunary_node(Node node) {
     NodeKind kind = node.kind;
 
     for (int i = unary_start; i < unary_end + 1; ++i) {
-        if (equal_node(unary_name[i], node_kind_name[kind], strlen(node_kind_name[kind]))) return true;
+        if (equal_substring(unary_name[i], node_kind_name[kind], strlen(node_kind_name[kind]))) return true;
     }
 
     return false;
-}
-
-unsigned equal_node(char *s1, char *s2, unsigned len) {
-    return !strncmp(s1, s2, len);
 }
 
 unsigned equal_root_node(Node node) {
