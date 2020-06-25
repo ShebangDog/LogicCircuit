@@ -8,7 +8,7 @@
 
 int token_kind_start = T_ROOT;
 int token_kind_end = T_END;
-char *token_kind_name[] = {[T_ROOT] = "{", [T_SIGNAL] = "<0|1>", [T_OPERATOR] = "<and|or|xor|not>", [T_END] = "}"};
+char *token_kind_name[] = {[T_ROOT] = "{", [T_SIGNAL] = "<0|1>", [T_BRACKET] = "<(|)>", [T_OPERATOR] = "<and|or|xor|not>", [T_END] = "}"};
 
 Token *new_token(Token token, Token *parent) {
     Token *t = calloc(sizeof(Token), 1);

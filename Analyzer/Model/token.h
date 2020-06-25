@@ -12,6 +12,7 @@
 typedef enum {
     T_ROOT,
     T_SIGNAL,
+    T_BRACKET,
     T_OPERATOR,
     T_END
 } TokenKind;

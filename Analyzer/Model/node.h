@@ -10,7 +10,7 @@
 #include "operator.h"
 
 typedef enum {
-    ND_ROOT, ND_AND, ND_OR, ND_XOR, ND_NOT, ND_SIGNAL_OFF, ND_SIGNAL_ON, ND_END
+    ND_ROOT, ND_AND, ND_OR, ND_XOR, ND_NOT, ND_SIGNAL_OFF, ND_SIGNAL_ON, ND_OPENING_BRACKET, ND_CLOSING_BRACKET, ND_END
 } NodeKind;
 
 int node_kind_start;

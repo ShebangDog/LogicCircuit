@@ -18,6 +18,8 @@ unsigned issignal(char ch);
 
 unsigned isoperator(char *str);
 
+unsigned isbracket(char ch);
+
 void tokenize(char *str) {
     _tokenize(str, lexer.token);
 }
@@ -38,6 +40,13 @@ static void _tokenize(char *str, Token *token) {
     if (issignal(*str)) {
         return _tokenize(str + 1, ({
             Token t = {.kind = T_SIGNAL, .value = {str[0], '\0'}};
+            new_token(t, token);
+        }));
+    }
+
+    if (isbracket(*str)) {
+        return _tokenize(str + 1, ({
+            Token t = {.kind = T_BRACKET, .value = {str[0], '\0'}};
             new_token(t, token);
         }));
     }
@@ -75,6 +84,10 @@ unsigned isoperator(char *str) {
     }
 
     return false;
+}
+
+unsigned isbracket(char ch) {
+    return ch == '(' || ch == ')';
 }
 
 char *consume_operator_lexer(char *str) {
