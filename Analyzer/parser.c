@@ -17,6 +17,7 @@
 Token *head;
 
 void parse(Token *token) {
+    parser.tree = NULL;
     head = token;
     parser.tree = block();
 }
@@ -39,20 +40,22 @@ static Node *block() {
     exit(1);
 }
 
-// <circuit> ::= <primary> | <primary> <binary> <circuit>
+// <circuit> ::= <primary> | <primary> <binary> <primary>
 static Node *circuit() {
     if (equal_end_token(*head)) return NULL;
 
     Node *node = primary();
 
-    if (isbinary_token(*head)) {
-        NodeKind kind = token_to_node_kind(*head);
-        head = head->nextToken;
+    while (1) {
+        if (isbinary_token(*head)) {
+            NodeKind kind = token_to_node_kind(*head);
+            head = head->nextToken;
 
-        node = new_node_binary(kind, node, circuit());
+            node = new_node_binary(kind, node, primary());
+        } else {
+            return node;
+        }
     }
-
-    return node;
 
 }
 
