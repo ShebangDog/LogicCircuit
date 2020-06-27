@@ -3,11 +3,10 @@
 //
 
 #include "evaluator.h"
+#include "../Utility/converter.h"
 #include <string.h>
 
 char _eval(Node *node, char *stack);
-
-Signal char_to_signal(char ch);
 
 Signal eval(Node *node) {
     char buffer[256] = {0};
@@ -51,12 +50,4 @@ char _eval(Node *node, char *stack) {
 
     puts("error / debug");
     exit(1);
-}
-
-Signal char_to_signal(char ch) {
-    return ({
-        Signal result = {.value = ch - '0'};
-
-        result;
-    });
 }

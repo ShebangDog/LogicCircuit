@@ -10,4 +10,6 @@
 
 NodeKind token_to_node_kind(Token token);
 
+Signal char_to_signal(char ch);
+
 #endif //LOGICCIRCUIT_CONVERTER_H

@@ -42,3 +42,11 @@ NodeKind token_to_node_kind(Token token) {
     printf("error token_to_node_kind / token: {value: %s kind: %s}\n", token.value, token_kind_name[token.kind]);
     exit(1);
 }
+
+Signal char_to_signal(char ch) {
+    return ({
+        Signal result = {.value = ch - '0'};
+
+        result;
+    });
+}
