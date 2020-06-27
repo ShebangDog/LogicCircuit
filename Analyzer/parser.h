@@ -15,11 +15,7 @@
 // <binary> ::= and | xor | or
 // <signal> ::= 1 | 0
 
-struct Parser {
-    Node *tree;
-} parser;
-
-void parse(Token *token);
+Node* parse(Token *token);
 
 static Node *block();
 

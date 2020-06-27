@@ -17,10 +17,9 @@
 
 Token *head;
 
-void parse(Token *token) {
-    parser.tree = NULL;
+Node* parse(Token *token) {
     head = token;
-    parser.tree = block();
+    return block();
 }
 
 unsigned consume_token_parser(char *string);
