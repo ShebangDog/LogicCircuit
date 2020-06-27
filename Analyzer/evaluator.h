@@ -8,10 +8,6 @@
 #include "Model/signal.h"
 #include "Model/node.h"
 
-struct {
-    Signal signal;
-} evaluator;
-
-void eval(Node *node);
+Signal eval(Node *node);
 
 #endif //LOGICCIRCUIT_EVALUATOR_H

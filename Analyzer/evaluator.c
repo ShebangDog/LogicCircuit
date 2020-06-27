@@ -3,19 +3,20 @@
 //
 
 #include "evaluator.h"
-#include "Model/node.h"
-#include "Model/signal.h"
 #include <string.h>
 
-Signal char_to_signal(char ch) {
-    return ({
-        Signal result = {.value = ch - '0'};
+char _eval(Node *node, char *stack);
 
-        result;
-    });
+Signal char_to_signal(char ch);
+
+Signal eval(Node *node) {
+    char buffer[256] = {0};
+    _eval(node, buffer);
+
+    return char_to_signal(buffer[0]);
 }
 
-void _eval(Node *node, char *stack) {
+char _eval(Node *node, char *stack) {
     if (node->left != NULL) _eval(node->left, stack);
     if (node->right != NULL) _eval(node->right, stack);
 
@@ -27,7 +28,7 @@ void _eval(Node *node, char *stack) {
             stack[strlen(stack) - 1] = '\0';
             sprintf(stack, "%s%u", stack, result.value);
 
-            return;
+            return stack[0];
         }
 
         if (isbinary_node(*node)) {
@@ -39,22 +40,23 @@ void _eval(Node *node, char *stack) {
             stack[strlen(stack) - 2] = '\0';
             sprintf(stack, "%s%u", stack, result.value);
 
-            return;
+            return stack[0];
         }
     }
 
     if (issignal_node(*node)) {
         sprintf(stack, "%s%u", stack, signal_of(*node).value);
-        return;
+        return stack[0];
     }
 
     puts("error / debug");
     exit(1);
 }
 
-void eval(Node *node) {
-    char buffer[256] = {0};
-    _eval(node, buffer);
+Signal char_to_signal(char ch) {
+    return ({
+        Signal result = {.value = ch - '0'};
 
-    evaluator.signal = char_to_signal(buffer[0]);
+        result;
+    });
 }
