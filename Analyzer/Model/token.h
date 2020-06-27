@@ -21,7 +21,7 @@ typedef struct Token {
     TokenKind kind;
     char value[16];
 
-    struct Token *nextToken;
+    struct Token *next_token;
 } Token;
 
 static Token ROOT_TOKEN = {.kind = T_ROOT, .value = "identify_root"};

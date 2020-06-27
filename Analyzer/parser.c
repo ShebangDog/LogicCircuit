@@ -49,7 +49,7 @@ static Node *circuit() {
     while (1) {
         if (isbinary_token(*head)) {
             NodeKind kind = token_to_node_kind(*head);
-            head = head->nextToken;
+            head = head->next_token;
 
             node = new_node_binary(kind, node, primary());
         } else {
@@ -86,13 +86,13 @@ static Node *signed_signal() {
     if (isunary_token(*head)) {
         return ({
             NodeKind kind_unary = token_to_node_kind(*head);
-            head = head->nextToken;
+            head = head->next_token;
 
             node = new_node_signed_signal(kind_unary, signed_signal());
             if (issignal_token(*head)) {
                 return ({
                     NodeKind kind_signal = token_to_node_kind(*head);
-                    head = head->nextToken;
+                    head = head->next_token;
 
                     node = new_node_signed_signal(kind_signal, node);
                     node;
@@ -110,7 +110,7 @@ static Node *signed_signal() {
 
 static Node *signal() {
     int value = head->value[0] - '0';
-    head = head->nextToken;
+    head = head->next_token;
 
     return new_node_signal(value);
 }
@@ -120,7 +120,7 @@ unsigned consume_token_parser(char *string) {
         return false;
     }
 
-    *head = *head->nextToken;
+    *head = *head->next_token;
     return true;
 }
 

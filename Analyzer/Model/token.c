@@ -13,7 +13,7 @@ char *token_kind_name[] = {[T_ROOT] = "{", [T_SIGNAL] = "<0|1>", [T_BRACKET] = "
 
 Token *new_token(Token token, Token *parent) {
     Token *t = calloc(sizeof(Token), 1);
-    parent->nextToken = t;
+    parent->next_token = t;
 
     t->kind = token.kind;
     strncpy(t->value, token.value, strlen(token.value));

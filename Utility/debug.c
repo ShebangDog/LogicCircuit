@@ -17,7 +17,7 @@ void print_token(Token *token) {
         return;
     }
 
-    print_token(token->nextToken);
+    print_token(token->next_token);
 }
 
 void _print_node(Node *node, char *result) {
