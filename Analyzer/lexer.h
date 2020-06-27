@@ -11,8 +11,8 @@ struct Lexer {
     Token *token;
 } lexer;
 
-static void _tokenize(char *str, Token *token);
+static Token* _tokenize(char *str, Token *token);
 
-void tokenize(char *str);
+Token* tokenize(char *str);
 
 #endif //LOGICCERCUIT_LEXER_H

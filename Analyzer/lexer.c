@@ -21,20 +21,22 @@ unsigned isoperator(char *str);
 
 unsigned isbracket(char ch);
 
-void tokenize(char *str) {
-    Token *root = calloc(sizeof(Token), 1);
-    *root = ROOT_TOKEN;
-    lexer.token = root;
-    _tokenize(str, lexer.token);
+Token *root_token;
+
+Token *tokenize(char *str) {
+    root_token = root_token == NULL ? calloc(sizeof(Token), 1) : root_token;
+    *root_token = ROOT_TOKEN;
+
+    return _tokenize(str, root_token);
 }
 
-static void _tokenize(char *str, Token *token) {
+static Token *_tokenize(char *str, Token *token) {
 
     if (*str == '\0') {
         Token t = END_TOKEN;
         new_token(t, token);
 
-        return;
+        return root_token;
     }
 
     if (isspace(*str)) {
