@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-char *consume_operator_lexer(char *str);
+Either(char*) consume_operator_lexer(char *str);
 
 unsigned issignal(char ch);
 
@@ -21,20 +21,23 @@ unsigned isbracket(char ch);
 
 Token *root_token;
 
-Token *tokenize(char *str) {
+Either(Token*) tokenize(char *str) {
     root_token = root_token == NULL ? calloc(sizeof(Token), 1) : root_token;
     *root_token = ROOT_TOKEN;
 
     return _tokenize(str, root_token);
 }
 
-static Token *_tokenize(char *str, Token *token) {
+static Either(Token*) _tokenize(char *str, Token *token) {
 
     if (*str == '\0') {
         Token t = END_TOKEN;
         new_token(t, token);
 
-        return root_token;
+        return ({
+            Either(Token*) either = {.left = NULL, .right = (RIGHT_T *) root_token};
+            either;
+        });
     }
 
     if (isspace(*str)) {
@@ -56,18 +59,21 @@ static Token *_tokenize(char *str, Token *token) {
     }
 
     if (isoperator(str)) {
-        char *next = consume_operator_lexer(str);
-        return _tokenize(next, ({
-            Token t = {.kind = T_OPERATOR, .value = 0};
-            int len = next - str;
+        Either(char*) either = consume_operator_lexer(str);
+        if (is_left(either)) return either;
+        if (is_right(either)) {
+            char *next = (char *) either.right;
+            return _tokenize(next, ({
+                Token t = {.kind = T_OPERATOR, .value = 0};
+                int len = next - str;
 
-            strncpy(t.value, str, len);
-            new_token(t, token);
-        }));
+                strncpy(t.value, str, len);
+                new_token(t, token);
+            }));
+        }
     }
 
-    puts("error in tokenize");
-    exit(1);
+    return error_occurred("error in tokenize");
 }
 
 unsigned issignal(char ch) {
@@ -90,16 +96,29 @@ unsigned isbracket(char ch) {
     return ch == '(' || ch == ')';
 }
 
-char *consume_operator_lexer(char *str) {
+Either(char *) consume_operator_lexer(char *str) {
     for (int i = binary_start; i < binary_end + 1; ++i) {
         unsigned len = strlen(binary_name[i]);
-        if (equal_substring(binary_name[i], str, len)) return str + len;
+        if (equal_substring(binary_name[i], str, len))
+            return ({
+                Either(char*) either = {.right = (RIGHT_T *) (str + len)};
+                either;
+            });
     }
 
     for (int i = unary_start; i < unary_end + 1; ++i) {
         unsigned len = strlen(unary_name[i]);
-        if (equal_substring(unary_name[i], str, len)) return str + len;
+        if (equal_substring(unary_name[i], str, len))
+            return ({
+                Either(char*) either = {.right = (RIGHT_T *) (str + len)};
+                either;
+            });
     }
 
-    exit(1);
+    return ({
+        char message[256] = {0};
+        sprintf(message, "expect operator but got %s", str);
+
+        error_occurred(message);
+    });
 }
