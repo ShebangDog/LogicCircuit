@@ -11,8 +11,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-struct Lexer lexer = {.token = &ROOT_TOKEN};
-
 char *consume_operator_lexer(char *str);
 
 unsigned issignal(char ch);
