@@ -33,3 +33,7 @@ unsigned equal_substring(char *s1, char *s2, unsigned len) {
     return !strncmp(s1, s2, len);
 }
 
+unsigned equal_string(char *s1, char *s2) {
+    return !strcmp(s1, s2);
+}
+

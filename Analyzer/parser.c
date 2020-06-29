@@ -117,9 +117,8 @@ static Either(Node*) signal() {
 }
 
 unsigned consume_token_parser(char *string) {
-    if (!equal_substring(head->value, string, strlen(string))) {
-        return false;
-    }
+
+    if (!equal_string(head->value, string)) return false;
 
     *head = *head->next_token;
     return true;

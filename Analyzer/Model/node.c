@@ -91,7 +91,7 @@ unsigned isbinary_node(Node node) {
     NodeKind kind = node.kind;
 
     for (int i = binary_start; i < binary_end + 1; ++i) {
-        if (equal_substring(binary_name[i], node_kind_name[kind], strlen(node_kind_name[kind]))) return true;
+        if (equal_string(binary_name[i], node_kind_name[kind])) return true;
     }
 
     return false;
@@ -101,7 +101,7 @@ unsigned isunary_node(Node node) {
     NodeKind kind = node.kind;
 
     for (int i = unary_start; i < unary_end + 1; ++i) {
-        if (equal_substring(unary_name[i], node_kind_name[kind], strlen(node_kind_name[kind]))) return true;
+        if (equal_string(unary_name[i], node_kind_name[kind])) return true;
     }
 
     return false;
