@@ -7,10 +7,6 @@
 
 #include "Model/token.h"
 
-struct Lexer {
-    Token *token;
-} lexer;
-
 static Token* _tokenize(char *str, Token *token);
 
 Token* tokenize(char *str);
