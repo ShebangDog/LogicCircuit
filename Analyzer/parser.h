@@ -7,6 +7,7 @@
 
 #include "Model/node.h"
 #include "Model/token.h"
+#include "../Utility/either.h"
 
 // <circuit> ::= <primary> <binary> <primary>
 // <primary> ::= <signed-signal> | "(" <circuit> ")"
@@ -15,20 +16,20 @@
 // <binary> ::= and | xor | or
 // <signal> ::= 1 | 0
 
-Node* parse(Token *token);
+Either(Node*) parse(Token *token);
 
-static Node *block();
+static Either(Node*) block();
 
-static Node *circuit();
+static Either(Node*) circuit();
 
-static Node *primary();
+static Either(Node*) primary();
 
-static Node *signed_signal();
+static Either(Node*) signed_signal();
 
-static Node *unary();
+static Either(Node*) unary();
 
-static Node *binary();
+static Either(Node*) binary();
 
-static Node *signal();
+static Either(Node*) signal();
 
 #endif //LOGICCIRCUIT_PARSER_H

@@ -17,7 +17,7 @@
 
 Token *head;
 
-Node* parse(Token *token) {
+Either(Node*) parse(Token *token) {
     head = token;
     return block();
 }
@@ -27,92 +27,93 @@ unsigned consume_token_parser(char *string);
 void expect_token_parser(char *string);
 
 // <block> ::= '{' <circuit> '}'
-static Node *block() {
-    Node *result;
+static Either(Node*) block() {
     if (consume_token_parser(ROOT_TOKEN.value)) {
-        result = circuit();
-        if (!equal_end_token(*head)) exit(1);
+        Either(Node*) result = circuit();
+        if (!equal_end_token(*head)) return error_occurred("expected end token");
 
         return result;
     }
 
-    puts("error block");
-    exit(1);
+    return error_occurred("error in block");
 }
 
 // <circuit> ::= <primary> | <primary> <binary> <primary>
-static Node *circuit() {
-    if (equal_end_token(*head)) return NULL;
+static Either(Node*) circuit() {
+    //if (equal_end_token(*head)) return NULL;
 
-    Node *node = primary();
+    Either(Node*) either_primary = primary();
 
     while (1) {
-        if (isbinary_token(*head)) {
+        if (!isbinary_token(*head)) return either_primary;
+        else {
             NodeKind kind = token_to_node_kind(*head);
             head = head->next_token;
 
-            node = new_node_binary(kind, node, primary());
-        } else {
-            return node;
+            if (is_left(either_primary)) return either_primary;
+            if (is_right(either_primary)) {
+                Either(Node*) right_either_primary = primary();
+                if (is_left(right_either_primary)) return right_either_primary;
+                if (is_right(right_either_primary)) {
+                    either_primary.right = (RIGHT_T *) new_node_binary(
+                            kind,
+                            (Node *) either_primary.right,
+                            (Node *) right_either_primary.right);
+                }
+            }
         }
     }
 
 }
 
 // <primary> ::= <signed-signal> | "(" <circuit> ")"
-static Node *primary() {
-    Node *node;
-
+static Either(Node*) primary() {
     if (consume_token_parser("(")) {
-        node = circuit();
-        expect_token_parser(")");
+        return ({
+            Either(Node*) either = circuit();
+            consume_token_parser(")") ? either : error_occurred("expect closing bracket");
+        });
     } else {
-        node = signed_signal();
+        return ({
+            Either(Node*) either = signed_signal();
+            either;
+        });
     }
-
-    return node;
 }
 
-static Node *signed_signal() {
-    Node *node = NULL;
-
+static Either(Node*) signed_signal() {
     if (issignal_token(*head)) {
         return ({
-            node = signal();
-            node;
+            Either(Node*) either = signal();
+            either;
         });
     }
 
     if (isunary_token(*head)) {
-        return ({
-            NodeKind kind_unary = token_to_node_kind(*head);
-            head = head->next_token;
+        NodeKind kind_unary = token_to_node_kind(*head);
+        head = head->next_token;
 
-            node = new_node_signed_signal(kind_unary, signed_signal());
-            if (issignal_token(*head)) {
-                return ({
-                    NodeKind kind_signal = token_to_node_kind(*head);
-                    head = head->next_token;
+        Either(Node*) either_signed_signal = signed_signal();
+        if (is_left(either_signed_signal)) return either_signed_signal;
+        if (is_right(either_signed_signal)) {
+            Node *right = (Node *) either_signed_signal.right;
 
-                    node = new_node_signed_signal(kind_signal, node);
-                    node;
-                });
-            }
-
-            node;
-        });
+            Either(Node*) either = {.right = (RIGHT_T *) new_node_signed_signal(kind_unary, right)};
+            return either;
+        }
     }
 
-    puts("signed-signal error");
-    exit(1);
-
+    return error_occurred("expect token that is unary or signal");
 }
 
-static Node *signal() {
+static Either(Node*) signal() {
     int value = head->value[0] - '0';
     head = head->next_token;
 
-    return new_node_signal(value);
+    return ({
+        Either(Node*) either = {.right = (RIGHT_T *) new_node_signal(value)};
+        either;
+    });
 }
 
 unsigned consume_token_parser(char *string) {
