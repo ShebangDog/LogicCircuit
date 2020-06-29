@@ -10,9 +10,9 @@ char _eval(Node *node, char *stack);
 
 Signal eval(Node *node) {
     char buffer[256] = {0};
-    _eval(node, buffer);
+    char result = _eval(node, buffer);
 
-    return char_to_signal(buffer[0]);
+    return char_to_signal(result);
 }
 
 char _eval(Node *node, char *stack) {

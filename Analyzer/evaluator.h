@@ -7,6 +7,7 @@
 
 #include "Model/signal.h"
 #include "Model/node.h"
+#include "../Utility/either.h"
 
 Signal eval(Node *node);
 
