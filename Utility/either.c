@@ -2,7 +2,6 @@
 // Created by ayumu on 2020/06/28.
 //
 #include <stddef.h>
-#include <stdlib.h>
 #include "either.h"
 
 bool is_right(struct Either either) {

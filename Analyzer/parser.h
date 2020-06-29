@@ -26,10 +26,6 @@ static Either(Node*) primary();
 
 static Either(Node*) signed_signal();
 
-static Either(Node*) unary();
-
-static Either(Node*) binary();
-
 static Either(Node*) signal();
 
 #endif //LOGICCIRCUIT_PARSER_H

@@ -124,12 +124,3 @@ unsigned consume_token_parser(char *string) {
     *head = *head->next_token;
     return true;
 }
-
-// if got different value it should display error
-void expect_token_parser(char *string) {
-    if (consume_token_parser(string)) return;
-
-    printf("error expect_token_parser / expect [%s] but got [token (value: %s, kind: %s)]\n", string, head->value,
-           token_kind_name[head->kind]);
-    exit(1);
-}
