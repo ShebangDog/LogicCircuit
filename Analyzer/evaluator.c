@@ -6,16 +6,17 @@
 #include "../Utility/converter.h"
 #include <string.h>
 
-char _eval(Node *node, char *stack);
+Either(Signal) _eval(Node *node, char *stack);
 
-Signal eval(Node *node) {
+Either(Signal) eval(Node *node) {
     char buffer[256] = {0};
-    char result = _eval(node, buffer);
-
-    return char_to_signal(result);
+    return ({
+        Either(char) either = _eval(node, buffer);
+        either;
+    });
 }
 
-char _eval(Node *node, char *stack) {
+Either(Signal) _eval(Node *node, char *stack) {
     if (node->left != NULL) _eval(node->left, stack);
     if (node->right != NULL) _eval(node->right, stack);
 
@@ -27,7 +28,13 @@ char _eval(Node *node, char *stack) {
             stack[strlen(stack) - 1] = '\0';
             sprintf(stack, "%s%u", stack, result.value);
 
-            return stack[0];
+            return ({
+                Signal *stack_head_signal = stack_head_signal = calloc(sizeof(Signal), 1);
+                *stack_head_signal = char_to_signal(stack[0]);
+
+                Either(char) either = {.left = NULL, .right = (RIGHT_T *) stack_head_signal};
+                either;
+            });
         }
 
         if (isbinary_node(*node)) {
@@ -39,15 +46,26 @@ char _eval(Node *node, char *stack) {
             stack[strlen(stack) - 2] = '\0';
             sprintf(stack, "%s%u", stack, result.value);
 
-            return stack[0];
+            return ({
+                Signal *stack_head_signal = stack_head_signal = calloc(sizeof(Signal), 1);
+                *stack_head_signal = char_to_signal(stack[0]);
+
+                Either(char) either = {.left = NULL, .right = (RIGHT_T *) stack_head_signal};
+                either;
+            });
         }
     }
 
     if (issignal_node(*node)) {
         sprintf(stack, "%s%u", stack, signal_of(*node).value);
-        return stack[0];
+        return ({
+            Signal *stack_head_signal = stack_head_signal = calloc(sizeof(Signal), 1);
+            *stack_head_signal = char_to_signal(stack[0]);
+
+            Either(char) either = {.left = NULL, .right = (RIGHT_T *) stack_head_signal};
+            either;
+        });
     }
 
-    puts("error / debug");
-    exit(1);
+    return error_occurred("error in evaluator");
 }
