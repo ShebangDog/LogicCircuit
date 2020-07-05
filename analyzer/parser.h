@@ -5,9 +5,9 @@
 #ifndef LOGICCIRCUIT_PARSER_H
 #define LOGICCIRCUIT_PARSER_H
 
-#include "Model/node.h"
-#include "Model/token.h"
-#include "../Utility/either.h"
+#include "model/node.h"
+#include "model/token.h"
+#include "../utility/either.h"
 
 // <circuit> ::= <primary> <binary> <primary>
 // <primary> ::= <signed-signal> | "(" <circuit> ")"

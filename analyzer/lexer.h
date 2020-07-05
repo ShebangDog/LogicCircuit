@@ -5,8 +5,8 @@
 #ifndef LOGICCERCUIT_LEXER_H
 #define LOGICCERCUIT_LEXER_H
 
-#include "Model/token.h"
-#include "../Utility/either.h"
+#include "model/token.h"
+#include "../utility/either.h"
 
 static Either(Token*) _tokenize(char *str, Token *token);
 

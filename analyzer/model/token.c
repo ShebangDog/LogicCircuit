@@ -3,7 +3,7 @@
 //
 
 #include "token.h"
-#include "../../Utility/string_util.h"
+#include "../../utility/string_util.h"
 #include <stdlib.h>
 #include <string.h>
 

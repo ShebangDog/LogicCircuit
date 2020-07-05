@@ -3,7 +3,7 @@
 //
 
 #include "evaluator.h"
-#include "../Utility/converter.h"
+#include "../utility/converter.h"
 #include <string.h>
 
 Either(Signal) _eval(Node *node, char *stack);
