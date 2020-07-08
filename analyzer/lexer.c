@@ -17,6 +17,8 @@ unsigned issignal(char ch);
 
 unsigned isoperator(char *str);
 
+unsigned isid(char ch);
+
 unsigned isbracket(char ch);
 
 Token *root_token;
@@ -65,12 +67,16 @@ static Either(Token*) _tokenize(char *str, Token *token) {
             char *next = (char *) either.right;
             return _tokenize(next, ({
                 Token t = {.kind = T_OPERATOR, .value = 0};
-                int len = next - str;
+                long len = next - str;
 
                 strncpy(t.value, str, len);
                 new_token(t, token);
             }));
         }
+    }
+
+    if (isid(*str)) {
+        Either() either =
     }
 
     return error_occurred("error in tokenize");
@@ -121,4 +127,8 @@ Either(char *) consume_operator_lexer(char *str) {
 
         error_occurred(message);
     });
+}
+
+unsigned isid(char ch) {
+    return 'a' <= ch && ch <= 'z';
 }
