@@ -1,8 +1,8 @@
 # LogicCircuit
 
-\<circuit\> ::= \<signed-signal\> | \<signed-signal\> \<binary\> \<signed-signal\>
+\<circuit\> ::= \<signed-signal\> (\<binary\> \<signed-signal\>)*
 
-\<signed-signal\> ::= \<primary\> | \<unary\> \<primary\>
+\<signed-signal\> ::= (\<unary\>)* \<primary\>
 
 \<primary\> ::= \<signal\> | "(" \<circuit\> ")"
 
