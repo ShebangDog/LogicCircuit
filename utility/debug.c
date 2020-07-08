@@ -5,9 +5,7 @@
 #include "debug.h"
 #include <stdio.h>
 #include <string.h>
-#include "signal.h"
-#include "../Analyzer/Model/node.h"
-#include "../Analyzer/Model/operator.h"
+#include "../analyzer/model/operator.h"
 
 void print_token(Token *token) {
     printf("%s ", token_kind_name[token->kind]);

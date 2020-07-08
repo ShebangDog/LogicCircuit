@@ -5,7 +5,7 @@
 #include "either.h"
 
 bool is_right(struct Either either) {
-    return either.right != NULL || either.left == NULL;
+    return either.right != NULL;
 }
 
 bool is_left(struct Either either) {
