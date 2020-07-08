@@ -1,10 +1,16 @@
 # LogicCircuit
 
-\<circuit\> ::= \<signed-signal\> (\<binary\> \<signed-signal\>)*
+\<program\> ::= ( \<statement\> )*
 
-\<signed-signal\> ::= (\<unary\>)* \<primary\>
+\<statement\> ::= \<assignment\> ";"
 
-\<primary\> ::= \<signal\> | "(" \<circuit\> ")"
+\<assignment\> ::= \<circuit\> ( "=" \<circuit\> )
+
+\<circuit\> ::= \<signed-signal\> ( \<binary\> \<signed-signal\> )*
+
+\<signed-signal\> ::= ( \<unary\> )* \<primary\>
+
+\<primary\> ::= \<id\> | \<signal\> | "(" \<circuit\> ")"
 
 \<binary\> ::= and | or | xor
 
