@@ -5,8 +5,8 @@
 #ifndef LOGICCIRCUIT_DEBUG_H
 #define LOGICCIRCUIT_DEBUG_H
 
-#include "../Analyzer/Model/token.h"
-#include "../Analyzer/Model/node.h"
+#include "../analyzer/model/token.h"
+#include "../analyzer/model/node.h"
 
 void print_token(Token *token);
 

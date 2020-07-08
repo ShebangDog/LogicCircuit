@@ -5,9 +5,9 @@
 #ifndef LOGICCIRCUIT_EVALUATOR_H
 #define LOGICCIRCUIT_EVALUATOR_H
 
-#include "Model/signal.h"
-#include "Model/node.h"
-#include "../Utility/either.h"
+#include "model/signal.h"
+#include "model/node.h"
+#include "../utility/either.h"
 
 Either(Signal) eval(Node *node);
 

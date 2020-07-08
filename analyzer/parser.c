@@ -3,10 +3,10 @@
 //
 
 #include <string.h>
-#include "Model/token.h"
+#include "model/token.h"
 #include "parser.h"
-#include "../Utility/converter.h"
-#include "../Utility/string_util.h"
+#include "../utility/converter.h"
+#include "../utility/string_util.h"
 
 // <circuit> ::= <primary> | <primary> <binary> <circuit>
 // <primary> ::= <signed-signal> | "(" <circuit> ")"

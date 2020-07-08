@@ -1,7 +1,7 @@
-#include "Analyzer/lexer.h"
-#include "Analyzer/parser.h"
-#include "Utility/debug.h"
-#include "Analyzer/evaluator.h"
+#include "analyzer/lexer.h"
+#include "analyzer/parser.h"
+#include "utility/debug.h"
+#include "analyzer/evaluator.h"
 
 void left_case(Either(Token | Node | Signal) either);
 

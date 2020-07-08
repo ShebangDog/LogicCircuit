@@ -3,9 +3,9 @@
 //
 
 #include "node.h"
-#include "../../Utility/converter.h"
+#include "../../utility/converter.h"
 #include "operator.h"
-#include "../../Utility/string_util.h"
+#include "../../utility/string_util.h"
 #include <string.h>
 
 char *node_kind_name[ND_END + 1] = {

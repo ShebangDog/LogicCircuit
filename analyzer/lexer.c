@@ -2,9 +2,9 @@
 // Created by ayumu on 2020/06/12.
 //
 
-#include "Model/token.h"
+#include "model/token.h"
 #include "lexer.h"
-#include "../Utility/string_util.h"
+#include "../utility/string_util.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
