@@ -13,6 +13,7 @@ typedef enum {
     T_ROOT,
     T_SIGNAL,
     T_BRACKET,
+    T_EQUAL,
     T_OPERATOR,
     T_ID,
     T_END
