@@ -2,18 +2,18 @@
 // Created by ayumu on 2020/06/12.
 //
 
-#include <string.h>
 #include "model/token.h"
 #include "parser.h"
 #include "../utility/converter.h"
 #include "../utility/string_util.h"
 
-// <circuit> ::= <primary> | <primary> <binary> <circuit>
-// <primary> ::= <signed-signal> | "(" <circuit> ")"
-// <signed-signal> ::= <signal> | <unary> <signed-signal>
-// <unary> ::= not
-// <binary> ::= and | xor | or
+// <circuit> ::= <signed-signal> (<binary> <signed-signal>)*
+// <signed-signal> ::= (<unary>)* <primary>
+// <primary> ::= <signal> | "(" <circuit> ")"
+//
+// <binary> ::= and | or | xor
 // <signal> ::= 1 | 0
+// <unary> :: = not
 
 Token *head;
 
@@ -26,7 +26,6 @@ unsigned consume_token_parser(char *string);
 
 void expect_token_parser(char *string);
 
-// <block> ::= '{' <circuit> '}'
 static Either(Node*) block() {
     if (consume_token_parser(ROOT_TOKEN.value)) {
         Either(Node*) result = circuit();
@@ -38,27 +37,25 @@ static Either(Node*) block() {
     return error_occurred("error in block");
 }
 
-// <circuit> ::= <primary> | <primary> <binary> <primary>
+// <circuit> ::= <signed-signal> (<binary> <signed-signal>)*
 static Either(Node*) circuit() {
-    //if (equal_end_token(*head)) return NULL;
-
-    Either(Node*) either_primary = primary();
+    Either(Node*) either_signed_signal = signed_signal();
 
     while (1) {
-        if (!isbinary_token(*head)) return either_primary;
+        if (!isbinary_token(*head)) return either_signed_signal;
         else {
             NodeKind kind = token_to_node_kind(*head);
             head = head->next_token;
 
-            if (is_left(either_primary)) return either_primary;
-            if (is_right(either_primary)) {
-                Either(Node*) right_either_primary = primary();
-                if (is_left(right_either_primary)) return right_either_primary;
-                if (is_right(right_either_primary)) {
-                    either_primary.right = (RIGHT_T *) new_node_binary(
+            if (is_left(either_signed_signal)) return either_signed_signal;
+            if (is_right(either_signed_signal)) {
+                Either(Node*) right_either_signed_signal = signed_signal();
+                if (is_left(right_either_signed_signal)) return right_either_signed_signal;
+                if (is_right(right_either_signed_signal)) {
+                    either_signed_signal.right = (RIGHT_T *) new_node_binary(
                             kind,
-                            (Node *) either_primary.right,
-                            (Node *) right_either_primary.right);
+                            (Node *) either_signed_signal.right,
+                            (Node *) right_either_signed_signal.right);
                 }
             }
         }
@@ -66,30 +63,10 @@ static Either(Node*) circuit() {
 
 }
 
-// <primary> ::= <signed-signal> | "(" <circuit> ")"
-static Either(Node*) primary() {
-    if (consume_token_parser("(")) {
-        return ({
-            Either(Node*) either = circuit();
-            consume_token_parser(")") ? either : error_occurred("expect closing bracket");
-        });
-    } else {
-        return ({
-            Either(Node*) either = signed_signal();
-            either;
-        });
-    }
-}
-
+// <signed-signal> ::= (<unary>)* <primary>
 static Either(Node*) signed_signal() {
-    if (issignal_token(*head)) {
-        return ({
-            Either(Node*) either = signal();
-            either;
-        });
-    }
-
-    if (isunary_token(*head)) {
+    if (!isunary_token(*head)) return primary();
+    else {
         NodeKind kind_unary = token_to_node_kind(*head);
         head = head->next_token;
 
@@ -103,7 +80,22 @@ static Either(Node*) signed_signal() {
         }
     }
 
-    return error_occurred("expect token that is unary or signal");
+    return error_occurred("error at signed_signal");
+}
+
+// <primary> ::= <signal> | "(" <circuit> ")"
+static Either(Node*) primary() {
+    if (consume_token_parser("(")) {
+        return ({
+            Either(Node*) either = circuit();
+            consume_token_parser(")") ? either : error_occurred("expect closing bracket");
+        });
+    } else {
+        return ({
+            Either(Node*) either = signal();
+            either;
+        });
+    }
 }
 
 static Either(Node*) signal() {
