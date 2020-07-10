@@ -6,6 +6,7 @@
 
 char *binary_name[] = {[and] = "and", [or] = "or", [xor] = "xor"};
 char *unary_name[] = {[not] = "not"};
+char *assignment_name = "=";
 
 int binary_start = and;
 int unary_start = not;
@@ -39,4 +40,8 @@ Signal xor_operator(Signal left, Signal right) {
 
        signal;
     });
+}
+
+void assignment_operator(Signal *to[], int offset, Signal *from) {
+    to[offset] = from;
 }

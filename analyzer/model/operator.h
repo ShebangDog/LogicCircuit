@@ -23,12 +23,15 @@ typedef struct {
     union {
         Signal (*binary)(Signal, Signal);
 
+        void (*assignment)(Signal *[], int, Signal*);
+
         Signal (*unary)(Signal);
     } function;
 } Operator;
 
 char *binary_name[xor + 1];
 char *unary_name[not + 1];
+char *assignment_name;
 
 int binary_start;
 int unary_start;
@@ -43,5 +46,7 @@ Signal or_operator(Signal left, Signal right);
 Signal and_operator(Signal left, Signal right);
 
 Signal xor_operator(Signal left, Signal right);
+
+void assignment_operator(Signal *to[], int offset, Signal *from);
 
 #endif //LOGICCIRCUIT_OPERATOR_H

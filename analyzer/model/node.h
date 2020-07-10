@@ -19,7 +19,7 @@ typedef enum {
     ND_SIGNAL_ON,
     ND_OPENING_BRACKET,
     ND_CLOSING_BRACKET,
-    ND_EQUAL,
+    ND_ASSIGNMENT,
     ND_ID,
     ND_END
 } NodeKind;
@@ -59,6 +59,8 @@ unsigned isid_node(Node node);
 unsigned isoperator_node(Node node);
 
 unsigned isbinary_node(Node node);
+
+unsigned isassignment_node(Node node);
 
 unsigned isunary_node(Node node);
 

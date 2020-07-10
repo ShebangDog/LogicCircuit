@@ -19,9 +19,14 @@ void print_token(Token *token) {
 }
 
 void _print_node(Node *node, char *result) {
+    if (isid_node(*node) || isassignment_node(*node))
+        sprintf(result, "%s%s ", result, node_kind_name[node->kind]);
+
     if (node->left != NULL) _print_node(node->left, result);
     if (node->right != NULL) _print_node(node->right, result);
-    sprintf(result, "%s%s ", result, node_kind_name[node->kind]);
+
+    if (!(isid_node(*node) || isassignment_node(*node)))
+        sprintf(result, "%s%s ", result, node_kind_name[node->kind]);
 }
 
 void print_node(Node *node) {

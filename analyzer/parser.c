@@ -49,7 +49,8 @@ static Either(Node*) assignment() {
 
     Node *left = (Node *) either_left.right;
 
-    if (consume_token_parser("=")) {
+    if (!consume_token_parser("=")) return either_left ;
+    else {
         Either(Node*) either_right = circuit();
         if (is_left(either_right)) return either_right;
 
@@ -60,8 +61,6 @@ static Either(Node*) assignment() {
             either;
         });
     }
-
-    return error_occurred("unknown error at assignment");
 }
 
 // <circuit> ::= <signed-signal> (<binary> <signed-signal>)*

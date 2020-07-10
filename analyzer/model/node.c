@@ -13,7 +13,7 @@ char *node_kind_name[] = {
         [ND_SIGNAL_OFF] = "0",
         [ND_OPENING_BRACKET] = "(",
         [ND_CLOSING_BRACKET] = ")",
-        [ND_EQUAL] = "=",
+        [ND_ASSIGNMENT] = "=",
         [ND_ID] = "var",
         [ND_NOT] = "not",
         [ND_AND] = "and",
@@ -29,7 +29,7 @@ Operator node_as_operator[ND_END + 1] = {
         [ND_OPENING_BRACKET] = NONE_OPERATOR,
         [ND_CLOSING_BRACKET] = NONE_OPERATOR,
         [ND_ID] = NONE_OPERATOR,
-        [ND_EQUAL] = NONE_OPERATOR,
+        [ND_ASSIGNMENT] = {.name = "assignment", .function.assignment = assignment_operator},
         [ND_NOT] = {.name = "not", .function.unary = not_operator},
         [ND_AND] = {.name = "and", .function.binary = and_operator},
         [ND_OR] = {.name = "or", .function.binary = or_operator},
@@ -43,7 +43,7 @@ Node *new_node(NodeKind kind, int offset, Node *left, Node *right) {
     Node *node = calloc(sizeof(Node), 1);
 
     node->kind = kind;
-    node->offset = (node->kind == ND_ID) ? (int) (offset * sizeof(unsigned)) : 0;
+    node->offset = (node->kind == ND_ID) ? offset : -1;
     node->left = left;
     node->right = right;
 
@@ -81,15 +81,15 @@ Node *new_node_signal(int value) {
 }
 
 Node *new_node_assignment(Node *left, Node *right) {
-    return new_node(ND_EQUAL, 0, left, right);
+    return new_node(ND_ASSIGNMENT, 0, left, right);
 }
 
 Node *new_node_id(char name) {
-    return new_node(ND_ID, name, NULL, NULL);
+    return new_node(ND_ID, name - 'a', NULL, NULL);
 }
 
 unsigned isequal_node(Node node) {
-    return node.kind == ND_EQUAL;
+    return node.kind == ND_ASSIGNMENT;
 }
 
 unsigned isid_node(Node node) {
@@ -124,6 +124,12 @@ unsigned isunary_node(Node node) {
     }
 
     return false;
+}
+
+unsigned isassignment_node(Node node) {
+    NodeKind kind = node.kind;
+
+    return equal_string(assignment_name, node_kind_name[kind]);
 }
 
 unsigned equal_root_node(Node node) {
