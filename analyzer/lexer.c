@@ -23,6 +23,8 @@ unsigned isid(char ch);
 
 unsigned isbracket(char ch);
 
+unsigned issemicolon(char ch);
+
 Token *root_token;
 
 Either(Token*) tokenize(char *str) {
@@ -46,6 +48,13 @@ static Either(Token*) _tokenize(char *str, Token *token) {
 
     if (isspace(*str)) {
         return _tokenize(str + 1, token);
+    }
+
+    if (issemicolon(*str)) {
+        return _tokenize(str + 1, ({
+            Token t = {.kind = T_SEMICOLON, .value = {str[0], '\0'}};
+            new_token(t, token);
+        }));
     }
 
     if (issignal(*str)) {
@@ -147,4 +156,8 @@ unsigned isid(char ch) {
 
 unsigned isequal(char ch) {
     return ch == '=';
+}
+
+unsigned issemicolon(char ch) {
+    return ch == ';';
 }

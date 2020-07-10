@@ -33,13 +33,23 @@ void expect_token_parser(char *string);
 
 static Either(Node*) block() {
     if (consume_token_parser(ROOT_TOKEN.value)) {
-        Either(Node*) result = assignment();
+        Either(Node*) result = statement();
         if (!equal_end_token(*head)) return error_occurred("expected end token");
 
         return result;
     }
 
     return error_occurred("error in block");
+}
+
+// <statement> ::= <assignment> ";"
+static Either(Node*) statement() {
+    Either(Node*) either_assignment = assignment();
+    if (is_left(either_assignment)) return either_assignment;
+
+    if (!consume_token_parser(";")) return error_occurred("expected \";\" but got not");
+
+    return either_assignment;
 }
 
 // <assignment> ::= <circuit> ( "=" <circuit> )

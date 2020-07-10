@@ -9,8 +9,10 @@
 #include "model/token.h"
 #include "../utility/either.h"
 
+// <program> ::= ( <statement> )*
+// <statement> ::= <assignment> ";"
 // <assignment> ::= <circuit> ( "=" <circuit> )
-
+//
 // <circuit> ::= <signed-signal> (<binary> <signed-signal>)*
 // <signed-signal> ::= (<unary>)* <primary>
 // <primary> ::= <id> | <signal> | "(" <circuit> ")"
@@ -23,6 +25,8 @@
 Either(Node*) parse(Token *token);
 
 static Either(Node*) block();
+
+static Either(Node*) statement();
 
 static Either(Node*) assignment();
 

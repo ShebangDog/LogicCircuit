@@ -6,7 +6,7 @@
 void left_case(Either(Token | Node | Signal) either);
 
 int main(int argc, char *argv[]) {
-    char string[] = "a = (not not 1 and 0) or 1";
+    char string[] = "a = (not not 1 and 0) or 1;";
 
     Either(Token*) either_token = tokenize(string);
     left_case(either_token);

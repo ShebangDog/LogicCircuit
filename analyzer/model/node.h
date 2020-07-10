@@ -19,6 +19,7 @@ typedef enum {
     ND_SIGNAL_ON,
     ND_OPENING_BRACKET,
     ND_CLOSING_BRACKET,
+    ND_SEMICOLON,
     ND_ASSIGNMENT,
     ND_ID,
     ND_END
