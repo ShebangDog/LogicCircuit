@@ -43,7 +43,7 @@ Node *new_node(NodeKind kind, int offset, Node *left, Node *right) {
     Node *node = calloc(sizeof(Node), 1);
 
     node->kind = kind;
-    node->offset = (node->kind == ND_ID) ? offset : 0;
+    node->offset = (node->kind == ND_ID) ? (int) (offset * sizeof(unsigned)) : 0;
     node->left = left;
     node->right = right;
 
