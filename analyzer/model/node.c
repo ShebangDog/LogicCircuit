@@ -4,17 +4,17 @@
 
 #include "node.h"
 #include "../../utility/converter.h"
-#include "operator.h"
 #include "../../utility/string_util.h"
-#include <string.h>
 
-char *node_kind_name[ND_END + 1] = {
+char *node_kind_name[] = {
         [ND_ROOT] = "{",
         [ND_END] = "}",
         [ND_SIGNAL_ON] = "1",
         [ND_SIGNAL_OFF] = "0",
         [ND_OPENING_BRACKET] = "(",
         [ND_CLOSING_BRACKET] = ")",
+        [ND_EQUAL] = "=",
+        [ND_ID] = "var",
         [ND_NOT] = "not",
         [ND_AND] = "and",
         [ND_OR] = "or",
@@ -28,6 +28,8 @@ Operator node_as_operator[ND_END + 1] = {
         [ND_SIGNAL_OFF] = NONE_OPERATOR,
         [ND_OPENING_BRACKET] = NONE_OPERATOR,
         [ND_CLOSING_BRACKET] = NONE_OPERATOR,
+        [ND_ID] = NONE_OPERATOR,
+        [ND_EQUAL] = NONE_OPERATOR,
         [ND_NOT] = {.name = "not", .function.unary = not_operator},
         [ND_AND] = {.name = "and", .function.binary = and_operator},
         [ND_OR] = {.name = "or", .function.binary = or_operator},
@@ -37,10 +39,11 @@ Operator node_as_operator[ND_END + 1] = {
 int node_kind_start = ND_ROOT;
 int node_kind_end = ND_END;
 
-Node *new_node(NodeKind kind, Node *left, Node *right) {
+Node *new_node(NodeKind kind, int offset, Node *left, Node *right) {
     Node *node = calloc(sizeof(Node), 1);
 
     node->kind = kind;
+    node->offset = (node->kind == ND_ID) ? offset : 0;
     node->left = left;
     node->right = right;
 
@@ -75,6 +78,22 @@ Node *new_node_signal(int value) {
     node->right = NULL;
 
     return node;
+}
+
+Node *new_node_assignment(Node *left, Node *right) {
+    return new_node(ND_EQUAL, 0, left, right);
+}
+
+Node *new_node_id(char name) {
+    return new_node(ND_ID, name, NULL, NULL);
+}
+
+unsigned isequal_node(Node node) {
+    return node.kind == ND_EQUAL;
+}
+
+unsigned isid_node(Node node) {
+    return node.kind == ND_ID;
 }
 
 unsigned issignal_node(Node node) {

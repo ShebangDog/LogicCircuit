@@ -7,13 +7,18 @@
 #include "../utility/converter.h"
 #include "../utility/string_util.h"
 
+// <program> ::= ( <statement> )*
+// <statement> ::= <assignment> ";"
+// <assignment> ::= <circuit> ( "=" <circuit> )
+//
 // <circuit> ::= <signed-signal> (<binary> <signed-signal>)*
 // <signed-signal> ::= (<unary>)* <primary>
-// <primary> ::= <signal> | "(" <circuit> ")"
+// <primary> ::= <id> | <signal> | "(" <circuit> ")"
 //
 // <binary> ::= and | or | xor
 // <signal> ::= 1 | 0
 // <unary> :: = not
+// <id> ::= [a-z]
 
 Token *head;
 
@@ -28,13 +33,35 @@ void expect_token_parser(char *string);
 
 static Either(Node*) block() {
     if (consume_token_parser(ROOT_TOKEN.value)) {
-        Either(Node*) result = circuit();
+        Either(Node*) result = assignment();
         if (!equal_end_token(*head)) return error_occurred("expected end token");
 
         return result;
     }
 
     return error_occurred("error in block");
+}
+
+// <assignment> ::= <circuit> ( "=" <circuit> )
+static Either(Node*) assignment() {
+    Either(Node*) either_left = circuit();
+    if (is_left(either_left)) return either_left;
+
+    Node *left = (Node *) either_left.right;
+
+    if (consume_token_parser("=")) {
+        Either(Node*) either_right = circuit();
+        if (is_left(either_right)) return either_right;
+
+        Node *right = (Node*) either_right.right;
+
+        return ({
+            Either(Node*) either = {.left = NULL, .right = (RIGHT_T *) new_node_assignment(left, right)};
+            either;
+        });
+    }
+
+    return error_occurred("unknown error at assignment");
 }
 
 // <circuit> ::= <signed-signal> (<binary> <signed-signal>)*
@@ -83,19 +110,20 @@ static Either(Node*) signed_signal() {
     return error_occurred("error at signed_signal");
 }
 
-// <primary> ::= <signal> | "(" <circuit> ")"
+// <primary> ::= <id> | <signal> | "(" <circuit> ")"
 static Either(Node*) primary() {
     if (consume_token_parser("(")) {
         return ({
             Either(Node*) either = circuit();
             consume_token_parser(")") ? either : error_occurred("expect closing bracket");
         });
-    } else {
-        return ({
-            Either(Node*) either = signal();
-            either;
-        });
     }
+
+    if (issignal_token(*head)) return signal();
+
+    if (isid_token(*head)) return id();
+
+    return error_occurred("unknown error at primary");
 }
 
 static Either(Node*) signal() {
@@ -104,6 +132,16 @@ static Either(Node*) signal() {
 
     return ({
         Either(Node*) either = {.right = (RIGHT_T *) new_node_signal(value)};
+        either;
+    });
+}
+
+static Either(Node*) id() {
+    char name = head->value[0];
+    head = head->next_token;
+
+    return ({
+        Either(Node*) either = {.right = (RIGHT_T *) new_node_id(name)};
         either;
     });
 }

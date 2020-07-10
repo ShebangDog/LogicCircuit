@@ -32,19 +32,6 @@ void print_node(Node *node) {
     puts(buffer);
 }
 
-//void _print_tree(Node *node, char *result, int left_level, int right_level) {
-//    sprintf(result, "%s%s\n", result, node_kind_name[node->kind]);
-//
-//    for (int i = 0; i < (left_level + right_level) / 2; ++i) sprintf(result, "%s%s", result, " ");
-//
-//    sprintf(result, "%sL", result);
-//
-//    for (int i = 0; i < (left_level + right_level) / 2; ++i) sprintf(result, "%s%s", result, "");
-//
-//    if (node->left != NULL) _print_tree(node->left, result, left_level + 1, right_level);
-//    if (node->right != NULL) _print_tree(node->right, result, left_level, right_level + 1);
-//}
-
 void _print_tree(Node *node, char *result, int level) {
     sprintf(result, "%s\n", result);
 
