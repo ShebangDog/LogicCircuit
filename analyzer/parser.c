@@ -22,24 +22,39 @@
 
 Token *head;
 
-Either(Node*) parse(Token *token) {
+Either(Node*[]) parse(Token *token, Node* result[]) {
     head = token;
-    return block();
+    return program(result);
 }
 
 unsigned consume_token_parser(char *string);
 
 void expect_token_parser(char *string);
 
-static Either(Node*) block() {
-    if (consume_token_parser(ROOT_TOKEN.value)) {
-        Either(Node*) result = statement();
-        if (!equal_end_token(*head)) return error_occurred("expected end token");
+static Either(Node*[]) program(Node* result[]) {
+    if (!consume_token_parser(ROOT_TOKEN.value)) return error_occurred("expected root token");
 
-        return result;
+    int index = 0;
+    for(;;) {
+        if (head == NULL) return error_occurred("expected end token but got NULL");
+
+        if (equal_string(END_TOKEN.value, head->value)) {
+            if (!consume_token_parser(END_TOKEN.value)) return error_occurred("expected end token");
+
+            result[index] = NULL;
+            return ({
+                Either(Node*[]) either = {.right = (RIGHT_T *) result};
+                either;
+            });
+        }
+
+        Either(Node*) either_statement = statement();
+        if (is_left(either_statement)) return either_statement;
+
+        Node* statement = (Node*) either_statement.right;
+
+        result[index++] = statement;
     }
-
-    return error_occurred("error in block");
 }
 
 // <statement> ::= <assignment> ";"

@@ -22,9 +22,9 @@
 // <unary> :: = not
 // <id> ::= [a-z]
 
-Either(Node*) parse(Token *token);
+Either(Node*) parse(Token *token, Node* result[]);
 
-static Either(Node*) block();
+static Either(Node*[]) program(Node* result[]);
 
 static Either(Node*) statement();
 
