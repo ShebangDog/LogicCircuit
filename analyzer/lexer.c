@@ -36,30 +36,30 @@ Either(Token*) tokenize(char *str) {
 
 static Either(Token*) _tokenize(char *str, Token *token) {
 
-    if (*str == '\0') {
+    if (str[0] == '\0') {
         Token t = END_TOKEN;
         new_token(t, token);
 
         return (Either(Token*)) {.left = NULL, .right = (RIGHT_T *) root_token};
     }
 
-    if (isspace(*str)) return _tokenize(str + 1, token);
+    if (isspace(str[0])) return _tokenize(str + 1, token);
 
-    if (issemicolon(*str)) {
+    if (issemicolon(str[0])) {
         return _tokenize(str + 1, ({
             Token t = {.kind = T_SEMICOLON, .value = {str[0], '\0'}};
             new_token(t, token);
         }));
     }
 
-    if (issignal(*str)) {
+    if (issignal(str[0])) {
         return _tokenize(str + 1, ({
             Token t = {.kind = T_SIGNAL, .value = {str[0], '\0'}};
             new_token(t, token);
         }));
     }
 
-    if (isbracket(*str)) {
+    if (isbracket(str[0])) {
         return _tokenize(str + 1, ({
             Token t = {.kind = T_BRACKET, .value = {str[0], '\0'}};
             new_token(t, token);
@@ -81,14 +81,14 @@ static Either(Token*) _tokenize(char *str, Token *token) {
         }
     }
 
-    if (isequal(*str)) {
+    if (isequal(str[0])) {
         return _tokenize(str + 1, ({
             Token t = {.kind = T_EQUAL, .value = {str[0], '\0'}};
             new_token(t, token);
         }));
     }
 
-    if (isid(*str)) {
+    if (isid(str[0])) {
         return _tokenize(str + 1, ({
             Token t = {.kind = T_ID, .value = {str[0], '\0'}};
             new_token(t, token);

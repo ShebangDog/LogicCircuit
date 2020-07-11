@@ -22,7 +22,7 @@
 
 Token *head;
 
-Either(Node*[]) parse(Token *token, Node* result[]) {
+Either(Node*[]) parse(Token *token, Node *result[]) {
     head = token;
     return program(result);
 }
@@ -31,24 +31,25 @@ unsigned consume_token_parser(char *string);
 
 void expect_token_parser(char *string);
 
-static Either(Node*[]) program(Node* result[]) {
+static Either(Node*[]) program(Node *result[]) {
     if (!consume_token_parser(ROOT_TOKEN.value)) return error_occurred("expected root token but got %s", head->value);
 
     int index = 0;
-    for(;;) {
+    for (;;) {
         if (head == NULL) return error_occurred("expected end token but got NULL");
 
         if (equal_string(END_TOKEN.value, head->value)) {
-            if (!consume_token_parser(END_TOKEN.value)) return error_occurred("expected end token but got %s", head->value);
+            if (!consume_token_parser(END_TOKEN.value))
+                return error_occurred("expected end token but got %s", head->value);
 
             result[index] = NULL;
-            return (Either(Node*[])){.right = (RIGHT_T *) result };
+            return (Either(Node*[])) {.right = (RIGHT_T *) result};
         }
 
         Either(Node*) either_statement = statement();
         if (is_left(either_statement)) return either_statement;
 
-        Node* statement = (Node*) either_statement.right;
+        Node *statement = (Node *) either_statement.right;
 
         result[index++] = statement;
     }
@@ -71,14 +72,14 @@ static Either(Node*) assignment() {
 
     Node *left = (Node *) either_left.right;
 
-    if (!consume_token_parser("=")) return (Either(Node*)){.left = NULL, .right = (RIGHT_T *) left};
+    if (!consume_token_parser("=")) return (Either(Node*)) {.left = NULL, .right = (RIGHT_T *) left};
     else {
         Either(Node*) either_right = circuit();
         if (is_left(either_right)) return either_right;
 
-        Node *right = (Node*) either_right.right;
+        Node *right = (Node *) either_right.right;
 
-        return (Either(Node*)){.left = NULL, .right = (RIGHT_T *) new_node_assignment(left, right)};
+        return (Either(Node*)) {.left = NULL, .right = (RIGHT_T *) new_node_assignment(left, right)};
     }
 }
 
@@ -117,15 +118,12 @@ static Either(Node*) signed_signal() {
 
         Either(Node*) either_signed_signal = signed_signal();
         if (is_left(either_signed_signal)) return either_signed_signal;
-        if (is_right(either_signed_signal)) {
-            Node *right = (Node *) either_signed_signal.right;
 
-            Either(Node*) either = {.right = (RIGHT_T *) new_node_signed_signal(kind_unary, right)};
-            return either;
-        }
+        Node *right = (Node *) either_signed_signal.right;
+
+        Either(Node*) either = {.right = (RIGHT_T *) new_node_signed_signal(kind_unary, right)};
+        return either;
     }
-
-    return error_occurred("error at signed_signal");
 }
 
 // <primary> ::= <id> | <signal> | "(" <circuit> ")"
@@ -141,7 +139,7 @@ static Either(Node*) primary() {
 
     if (isid_token(*head)) return id();
 
-    return error_occurred("unknown error at primary");
+    return error_occurred("expected id or signal but got %s", head->value);
 }
 
 static Either(Node*) signal() {
@@ -155,7 +153,7 @@ static Either(Node*) id() {
     char name = head->value[0];
     head = head->next_token;
 
-    return (Either(Node*)){.right = (RIGHT_T *) new_node_id(name)};
+    return (Either(Node*)) {.right = (RIGHT_T *) new_node_id(name)};
 }
 
 unsigned consume_token_parser(char *string) {
