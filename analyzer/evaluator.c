@@ -10,12 +10,16 @@ Signal *variable_stack[32] = {NULL};
 
 Either(Signal) _eval(Node *node, char *stack);
 
-Either(Signal) eval(Node *node) {
-    char buffer[256] = {0};
-    return ({
-        Either(char) either = _eval(node, buffer);
-        either;
-    });
+Either(Signal) eval(Node *node_array[]) {
+    for(int index = 0;; ++index) {
+        char buffer[256] = {0};
+        Node *node = node_array[index];
+
+        Either(Signal) either_signal = _eval(node, buffer);
+        if (is_left(either_signal)) return either_signal;
+
+        if (node_array[index + 1] == NULL) return either_signal;
+    }
 }
 
 Either(Signal) _eval(Node *node, char *stack) {

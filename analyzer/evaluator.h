@@ -9,6 +9,6 @@
 #include "model/node.h"
 #include "../utility/either.h"
 
-Either(Signal) eval(Node *node);
+Either(Signal) eval(Node *node_array[]);
 
 #endif //LOGICCIRCUIT_EVALUATOR_H
