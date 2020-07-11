@@ -59,7 +59,7 @@ static Either(Node*) statement() {
     Either(Node*) either_assignment = assignment();
     if (is_left(either_assignment)) return either_assignment;
 
-    if (!consume_token_parser(";")) return error_occurred("expected \";\" but got not");
+    if (!consume_token_parser(";")) return error_occurred("expected \";\" but got %s", head->value);
 
     return either_assignment;
 }
@@ -133,7 +133,7 @@ static Either(Node*) primary() {
     if (consume_token_parser("(")) {
         return ({
             Either(Node*) either = circuit();
-            consume_token_parser(")") ? either : error_occurred("expect closing bracket");
+            consume_token_parser(")") ? either : error_occurred("expect \')\' but got %s", head->value);
         });
     }
 
