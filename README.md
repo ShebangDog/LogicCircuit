@@ -1,5 +1,7 @@
 # LogicCircuit
 
+## BNF
+
 \<program\> ::= ( \<statement\> )*
 
 \<statement\> ::= \<assignment\> ";"
