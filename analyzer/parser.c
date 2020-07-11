@@ -159,6 +159,6 @@ unsigned consume_token_parser(char *string) {
 
     if (!equal_string(head->value, string)) return false;
 
-    *head = *head->next_token;
+    head = head->next_token;
     return true;
 }
