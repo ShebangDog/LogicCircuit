@@ -29,14 +29,6 @@ void _print_node(Node *node, char *result) {
         sprintf(result, "%s%s ", result, node_kind_name[node->kind]);
 }
 
-void print_node(Node *node) {
-    char buffer[256] = {0};
-
-    _print_node(node, buffer);
-
-    puts(buffer);
-}
-
 void _print_tree(Node *node, char *result, int level) {
     sprintf(result, "%s\n", result);
 
@@ -58,4 +50,17 @@ void print_tree(Node *node, char *result) {
 
 void print_signal(Signal signal) {
     printf("%u\n", signal.value);
+}
+
+void print_node(Node *node) {
+    char buffer[256] = {0};
+
+    _print_node(node, buffer);
+
+    puts(buffer);
+}
+
+void print_nodes(Node *nodes[]) {
+    int index = 0;
+    for (; nodes[index] != NULL;) print_node(nodes[index++]);
 }
