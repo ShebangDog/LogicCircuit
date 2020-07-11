@@ -13,17 +13,16 @@ int main(int argc, char *argv[]) {
 
     if (is_right(either_token)) {
         Token *token = (Token *) either_token.right;
-        Node *program_node[256];
-        for (int index = 0; index < 256; ++index) program_node[index] = calloc(sizeof(Node), 1);
+        Node program_node[256];
+        Node **program_p = (Node **) &program_node;
 
 //        print_token(token);
-        Either(Node*[]) either_node_array = parse(token, program_node);
+        Either(Node*[]) either_node_array = parse(token, program_p);
         left_case(either_node_array);
 
         if (is_right(either_node_array)) {
             Node **node_array = (Node **) either_node_array.right;
-
-//            for (int index = 0; node_array[index] != NULL; ++index) print_node(node_array[index]);
+            print_nodes(node_array);
 
             Either(Signal) either_signal = eval(node_array);
             left_case(either_signal);
