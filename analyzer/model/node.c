@@ -4,17 +4,18 @@
 
 #include "node.h"
 #include "../../utility/converter.h"
-#include "operator.h"
 #include "../../utility/string_util.h"
-#include <string.h>
 
-char *node_kind_name[ND_END + 1] = {
+char *node_kind_name[] = {
         [ND_ROOT] = "{",
         [ND_END] = "}",
         [ND_SIGNAL_ON] = "1",
         [ND_SIGNAL_OFF] = "0",
         [ND_OPENING_BRACKET] = "(",
         [ND_CLOSING_BRACKET] = ")",
+        [ND_ASSIGNMENT] = "=",
+        [ND_SEMICOLON] = ";",
+        [ND_ID] = "var",
         [ND_NOT] = "not",
         [ND_AND] = "and",
         [ND_OR] = "or",
@@ -28,6 +29,9 @@ Operator node_as_operator[ND_END + 1] = {
         [ND_SIGNAL_OFF] = NONE_OPERATOR,
         [ND_OPENING_BRACKET] = NONE_OPERATOR,
         [ND_CLOSING_BRACKET] = NONE_OPERATOR,
+        [ND_ID] = NONE_OPERATOR,
+        [ND_SEMICOLON] = NONE_OPERATOR,
+        [ND_ASSIGNMENT] = {.name = "assignment", .function.assignment = assignment_operator},
         [ND_NOT] = {.name = "not", .function.unary = not_operator},
         [ND_AND] = {.name = "and", .function.binary = and_operator},
         [ND_OR] = {.name = "or", .function.binary = or_operator},
@@ -37,10 +41,11 @@ Operator node_as_operator[ND_END + 1] = {
 int node_kind_start = ND_ROOT;
 int node_kind_end = ND_END;
 
-Node *new_node(NodeKind kind, Node *left, Node *right) {
+Node *new_node(NodeKind kind, int offset, Node *left, Node *right) {
     Node *node = calloc(sizeof(Node), 1);
 
     node->kind = kind;
+    node->offset = (node->kind == ND_ID) ? offset : -1;
     node->left = left;
     node->right = right;
 
@@ -77,6 +82,22 @@ Node *new_node_signal(int value) {
     return node;
 }
 
+Node *new_node_assignment(Node *left, Node *right) {
+    return new_node(ND_ASSIGNMENT, 0, left, right);
+}
+
+Node *new_node_id(char name) {
+    return new_node(ND_ID, name - 'a', NULL, NULL);
+}
+
+unsigned isequal_node(Node node) {
+    return node.kind == ND_ASSIGNMENT;
+}
+
+unsigned isid_node(Node node) {
+    return node.kind == ND_ID;
+}
+
 unsigned issignal_node(Node node) {
     NodeKind kind = node.kind;
 
@@ -105,6 +126,12 @@ unsigned isunary_node(Node node) {
     }
 
     return false;
+}
+
+unsigned isassignment_node(Node node) {
+    NodeKind kind = node.kind;
+
+    return equal_string(assignment_name, node_kind_name[kind]);
 }
 
 unsigned equal_root_node(Node node) {

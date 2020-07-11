@@ -12,6 +12,9 @@ NodeKind token_to_node_kind(Token token) {
 
     if (token.kind == T_SIGNAL) return token.value[0] == '1' ? ND_SIGNAL_ON : ND_SIGNAL_OFF;
     if (token.kind == T_BRACKET) return token.value[0] == '(' ? ND_OPENING_BRACKET : ND_CLOSING_BRACKET;
+    if (token.kind == T_ID) return ND_ID;
+    if (token.kind == T_EQUAL) return ND_ASSIGNMENT;
+    if (token.kind == T_SEMICOLON) return ND_SEMICOLON;
     if (token.kind == T_OPERATOR) {
         char *p = token.value;
 

@@ -13,7 +13,10 @@ typedef enum {
     T_ROOT,
     T_SIGNAL,
     T_BRACKET,
+    T_SEMICOLON,
+    T_EQUAL,
     T_OPERATOR,
+    T_ID,
     T_END
 } TokenKind;
 
@@ -42,5 +45,9 @@ unsigned isbinary_token(Token token);
 unsigned isunary_token(Token token);
 
 unsigned issignal_token(Token token);
+
+unsigned issemicolon_token(Token token);
+
+unsigned isid_token(Token token);
 
 #endif //LOGICCERCUIT_TOKEN_H

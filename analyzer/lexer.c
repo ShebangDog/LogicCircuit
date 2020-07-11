@@ -15,9 +15,15 @@ Either(char*) consume_operator_lexer(char *str);
 
 unsigned issignal(char ch);
 
+unsigned isequal(char ch);
+
 unsigned isoperator(char *str);
 
+unsigned isid(char ch);
+
 unsigned isbracket(char ch);
+
+unsigned issemicolon(char ch);
 
 Token *root_token;
 
@@ -44,6 +50,13 @@ static Either(Token*) _tokenize(char *str, Token *token) {
         return _tokenize(str + 1, token);
     }
 
+    if (issemicolon(*str)) {
+        return _tokenize(str + 1, ({
+            Token t = {.kind = T_SEMICOLON, .value = {str[0], '\0'}};
+            new_token(t, token);
+        }));
+    }
+
     if (issignal(*str)) {
         return _tokenize(str + 1, ({
             Token t = {.kind = T_SIGNAL, .value = {str[0], '\0'}};
@@ -59,18 +72,32 @@ static Either(Token*) _tokenize(char *str, Token *token) {
     }
 
     if (isoperator(str)) {
-        Either(char*) either = consume_operator_lexer(str);
+        Either(char *) either = consume_operator_lexer(str);
         if (is_left(either)) return either;
         if (is_right(either)) {
             char *next = (char *) either.right;
             return _tokenize(next, ({
                 Token t = {.kind = T_OPERATOR, .value = 0};
-                int len = next - str;
+                long len = next - str;
 
                 strncpy(t.value, str, len);
                 new_token(t, token);
             }));
         }
+    }
+
+    if (isequal(*str)) {
+        return _tokenize(str + 1, ({
+            Token t = {.kind = T_EQUAL, .value = {str[0], '\0'}};
+            new_token(t, token);
+        }));
+    }
+
+    if (isid(*str)) {
+        return _tokenize(str + 1, ({
+            Token t = {.kind = T_ID, .value = {str[0], '\0'}};
+            new_token(t, token);
+        }));
     }
 
     return error_occurred("error in tokenize");
@@ -121,4 +148,16 @@ Either(char *) consume_operator_lexer(char *str) {
 
         error_occurred(message);
     });
+}
+
+unsigned isid(char ch) {
+    return 'a' <= ch && ch <= 'z';
+}
+
+unsigned isequal(char ch) {
+    return ch == '=';
+}
+
+unsigned issemicolon(char ch) {
+    return ch == ';';
 }
