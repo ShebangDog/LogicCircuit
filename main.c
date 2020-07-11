@@ -6,23 +6,26 @@
 void left_case(Either(Token | Node | Signal) either);
 
 int main(int argc, char *argv[]) {
-    char string[] = "a = (not not 1 and 0) or 1;";
+    char string[] = "a = (not not 1 and 0) or 1; a and 1;";
 
     Either(Token*) either_token = tokenize(string);
     left_case(either_token);
 
     if (is_right(either_token)) {
         Token *token = (Token *) either_token.right;
+        Node *program_node[256];
+        for (int index = 0; index < 256; ++index) program_node[index] = calloc(sizeof(Node), 1);
 
-        print_token(token);
-        Either(Node*) either_node = parse(token);
-        left_case(either_node);
+//        print_token(token);
+        Either(Node*[]) either_node_array = parse(token, program_node);
+        left_case(either_node_array);
 
-        if (is_right(either_node)) {
-            Node *node = (Node *) either_node.right;
-            print_node(node);
+        if (is_right(either_node_array)) {
+            Node **node_array = (Node **) either_node_array.right;
 
-            Either(Signal) either_signal = eval(node);
+//            for (int index = 0; node_array[index] != NULL; ++index) print_node(node_array[index]);
+
+            Either(Signal) either_signal = eval(node_array);
             left_case(either_signal);
 
             if (is_right(either_signal)) {
