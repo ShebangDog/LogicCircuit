@@ -126,7 +126,7 @@ Either(char *) consume_operator_lexer(char *str) {
 
     for (int i = unary_start; i < unary_end + 1; ++i) {
         unsigned len = strlen(unary_name[i]);
-        if (equal_substring(binary_name[i], str, len)) return (Either(char*)) {.right = (RIGHT_T *) (str + len)};
+        if (equal_substring(unary_name[i], str, len)) return (Either(char*)) {.right = (RIGHT_T *) (str + len)};
     }
 
     return ({
