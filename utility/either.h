@@ -21,6 +21,6 @@ bool is_right(struct Either either);
 
 bool is_left(struct Either either);
 
-Either(Error) error_occurred(LEFT_T message);
+Either(Error) error_occurred(const char *fmt, ...);
 
 #endif //LOGICCIRCUIT_EITHER_H

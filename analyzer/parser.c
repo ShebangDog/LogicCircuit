@@ -32,14 +32,14 @@ unsigned consume_token_parser(char *string);
 void expect_token_parser(char *string);
 
 static Either(Node*[]) program(Node* result[]) {
-    if (!consume_token_parser(ROOT_TOKEN.value)) return error_occurred("expected root token");
+    if (!consume_token_parser(ROOT_TOKEN.value)) return error_occurred("expected root token but got %s", head->value);
 
     int index = 0;
     for(;;) {
         if (head == NULL) return error_occurred("expected end token but got NULL");
 
         if (equal_string(END_TOKEN.value, head->value)) {
-            if (!consume_token_parser(END_TOKEN.value)) return error_occurred("expected end token");
+            if (!consume_token_parser(END_TOKEN.value)) return error_occurred("expected end token but got %s", head->value);
 
             result[index] = NULL;
             return (Either(Node*[])){.right = (RIGHT_T *) result };
@@ -59,7 +59,7 @@ static Either(Node*) statement() {
     Either(Node*) either_assignment = assignment();
     if (is_left(either_assignment)) return either_assignment;
 
-    if (!consume_token_parser(";")) return error_occurred("expected \";\" but got not");
+    if (!consume_token_parser(";")) return error_occurred("expected \";\" but got %s", head->value);
 
     return either_assignment;
 }
@@ -71,7 +71,7 @@ static Either(Node*) assignment() {
 
     Node *left = (Node *) either_left.right;
 
-    if (!consume_token_parser("=")) return either_left ;
+    if (!consume_token_parser("=")) return error_occurred("expected \'=\' but got %s", head->value);
     else {
         Either(Node*) either_right = circuit();
         if (is_left(either_right)) return either_right;
@@ -133,7 +133,7 @@ static Either(Node*) primary() {
     if (consume_token_parser("(")) {
         return ({
             Either(Node*) either = circuit();
-            consume_token_parser(")") ? either : error_occurred("expect closing bracket");
+            consume_token_parser(")") ? either : error_occurred("expect \')\' but got %s", head->value);
         });
     }
 
