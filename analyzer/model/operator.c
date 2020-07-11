@@ -19,27 +19,15 @@ Signal not_operator(Signal signal) {
 }
 
 Signal or_operator(Signal left, Signal right) {
-    return ({
-        Signal signal = {.value = left.value | right.value};
-
-        signal;
-    });
+    return (Signal){.value = left.value | right.value};
 }
 
 Signal and_operator(Signal left, Signal right) {
-    return ({
-        Signal signal = {.value = left.value & right.value};
-
-        signal;
-    });
+    return (Signal){.value = left.value & right.value};
 }
 
 Signal xor_operator(Signal left, Signal right) {
-    return ({
-       Signal signal = {.value = left.value ^ right.value};
-
-       signal;
-    });
+    return (Signal){.value = left.value ^ right.value};
 }
 
 void assignment_operator(Signal *to[], int offset, Signal *from) {

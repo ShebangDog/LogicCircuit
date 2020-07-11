@@ -13,9 +13,6 @@ bool is_left(struct Either either) {
 }
 
 Either(Error) error_occurred(const LEFT_T message) {
-    return ({
-        Either(Error) either = {.left = message, .right = NULL};
-        either;
-    });
+    return (Either(Error)){.left = message, .right = NULL};
 }
 

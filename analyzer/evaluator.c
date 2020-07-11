@@ -25,13 +25,6 @@ Either(Signal) eval(Node *node_array[]) {
 Either(Signal) _eval(Node *node, char *stack) {
     if (issignal_node(*node)) {
         sprintf(stack, "%s%u", stack, signal_of(*node).value);
-        return ({
-            Signal *stack_head_signal = stack_head_signal = calloc(sizeof(Signal), 1);
-            *stack_head_signal = char_to_signal(stack[0]);
-
-            Either(char) either = {.left = NULL, .right = (RIGHT_T *) stack_head_signal};
-            either;
-        });
     }
 
     if (isid_node(*node)) {
@@ -39,13 +32,6 @@ Either(Signal) _eval(Node *node, char *stack) {
         if (variable_signal == NULL) return error_occurred("undef");
 
         sprintf(stack, "%s%u", stack, variable_signal->value);
-        return ({
-            Signal *stack_head_signal = stack_head_signal = calloc(sizeof(Signal), 1);
-            *stack_head_signal = char_to_signal(stack[0]);
-
-            Either(char) either = {.left = NULL, .right = (RIGHT_T *) stack_head_signal};
-            either;
-        });
     }
 
     if (isassignment_node(*node)) {
@@ -58,14 +44,6 @@ Either(Signal) _eval(Node *node, char *stack) {
 
         if (is_left(either_signal)) return either_signal;
         node_as_operator[kind].function.assignment(variable_stack, offset, (Signal *) either_signal.right);
-
-        return ({
-            Signal *stack_head_signal = stack_head_signal = calloc(sizeof(Signal), 1);
-            *stack_head_signal = char_to_signal(stack[0]);
-
-            Either(char) either = {.left = NULL, .right = (RIGHT_T *) stack_head_signal};
-            either;
-        });
     }
 
     if (node->left != NULL) {
@@ -85,14 +63,6 @@ Either(Signal) _eval(Node *node, char *stack) {
 
             stack[strlen(stack) - 1] = '\0';
             sprintf(stack, "%s%u", stack, result.value);
-
-            return ({
-                Signal *stack_head_signal = stack_head_signal = calloc(sizeof(Signal), 1);
-                *stack_head_signal = char_to_signal(stack[0]);
-
-                Either(char) either = {.left = NULL, .right = (RIGHT_T *) stack_head_signal};
-                either;
-            });
         }
 
         if (isbinary_node(*node)) {
@@ -103,16 +73,14 @@ Either(Signal) _eval(Node *node, char *stack) {
 
             stack[strlen(stack) - 2] = '\0';
             sprintf(stack, "%s%u", stack, result.value);
-
-            return ({
-                Signal *stack_head_signal = stack_head_signal = calloc(sizeof(Signal), 1);
-                *stack_head_signal = char_to_signal(stack[0]);
-
-                Either(char) either = {.left = NULL, .right = (RIGHT_T *) stack_head_signal};
-                either;
-            });
         }
     }
 
-    return error_occurred("error in evaluator");
+    return ({
+        Signal *stack_head_signal = calloc(sizeof(Signal), 1);
+        *stack_head_signal = char_to_signal(stack[0]);
+
+        Either(char) either = {.left = NULL, .right = (RIGHT_T *) stack_head_signal};
+        either;
+    });
 }

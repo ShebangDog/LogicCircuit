@@ -47,9 +47,5 @@ NodeKind token_to_node_kind(Token token) {
 }
 
 Signal char_to_signal(char ch) {
-    return ({
-        Signal result = {.value = ch - '0'};
-
-        result;
-    });
+    return (Signal){.value = ch - '0'};
 }

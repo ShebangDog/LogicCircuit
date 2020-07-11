@@ -42,10 +42,7 @@ static Either(Node*[]) program(Node* result[]) {
             if (!consume_token_parser(END_TOKEN.value)) return error_occurred("expected end token");
 
             result[index] = NULL;
-            return ({
-                Either(Node*[]) either = {.right = (RIGHT_T *) result};
-                either;
-            });
+            return (Either(Node*[])){.right = (RIGHT_T *) result };
         }
 
         Either(Node*) either_statement = statement();
@@ -81,10 +78,7 @@ static Either(Node*) assignment() {
 
         Node *right = (Node*) either_right.right;
 
-        return ({
-            Either(Node*) either = {.left = NULL, .right = (RIGHT_T *) new_node_assignment(left, right)};
-            either;
-        });
+        return (Either(Node*)){.left = NULL, .right = (RIGHT_T *) new_node_assignment(left, right)};
     }
 }
 
@@ -154,20 +148,14 @@ static Either(Node*) signal() {
     int value = head->value[0] - '0';
     head = head->next_token;
 
-    return ({
-        Either(Node*) either = {.right = (RIGHT_T *) new_node_signal(value)};
-        either;
-    });
+    return (Either(Node*)) {.right = (RIGHT_T *) new_node_signal(value)};
 }
 
 static Either(Node*) id() {
     char name = head->value[0];
     head = head->next_token;
 
-    return ({
-        Either(Node*) either = {.right = (RIGHT_T *) new_node_id(name)};
-        either;
-    });
+    return (Either(Node*)){.right = (RIGHT_T *) new_node_id(name)};
 }
 
 unsigned consume_token_parser(char *string) {

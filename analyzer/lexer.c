@@ -40,15 +40,10 @@ static Either(Token*) _tokenize(char *str, Token *token) {
         Token t = END_TOKEN;
         new_token(t, token);
 
-        return ({
-            Either(Token*) either = {.left = NULL, .right = (RIGHT_T *) root_token};
-            either;
-        });
+        return (Either(Token*)) {.left = NULL, .right = (RIGHT_T *) root_token};
     }
 
-    if (isspace(*str)) {
-        return _tokenize(str + 1, token);
-    }
+    if (isspace(*str)) return _tokenize(str + 1, token);
 
     if (issemicolon(*str)) {
         return _tokenize(str + 1, ({
@@ -126,20 +121,12 @@ unsigned isbracket(char ch) {
 Either(char *) consume_operator_lexer(char *str) {
     for (int i = binary_start; i < binary_end + 1; ++i) {
         unsigned len = strlen(binary_name[i]);
-        if (equal_substring(binary_name[i], str, len))
-            return ({
-                Either(char*) either = {.right = (RIGHT_T *) (str + len)};
-                either;
-            });
+        if (equal_substring(binary_name[i], str, len)) return (Either(char*)) {.right = (RIGHT_T *) (str + len)};
     }
 
     for (int i = unary_start; i < unary_end + 1; ++i) {
         unsigned len = strlen(unary_name[i]);
-        if (equal_substring(unary_name[i], str, len))
-            return ({
-                Either(char*) either = {.right = (RIGHT_T *) (str + len)};
-                either;
-            });
+        if (equal_substring(binary_name[i], str, len)) return (Either(char*)) {.right = (RIGHT_T *) (str + len)};
     }
 
     return ({
