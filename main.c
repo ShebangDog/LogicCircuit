@@ -6,7 +6,12 @@
 void left_case(Either(Token | Node | Signal) either);
 
 int main(int argc, char *argv[]) {
-    char string[] = "a = (not not 1 and 0) or 1; a and 1;";
+    char string[1024] = {0};
+    char line[1024] = {0};
+    FILE *file = fopen("./../input", "r");
+    if (file == NULL) exit(1);
+
+    while (fgets(line, 1024, file) != NULL ) sprintf(string, "%s%s", string, line);
 
     Either(Token*) either_token = tokenize(string);
     left_case(either_token);

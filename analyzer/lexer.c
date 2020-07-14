@@ -35,7 +35,6 @@ Either(Token*) tokenize(char *str) {
 }
 
 static Either(Token*) _tokenize(char *str, Token *token) {
-
     if (str[0] == '\0') {
         Token t = END_TOKEN;
         new_token(t, token);
@@ -43,7 +42,7 @@ static Either(Token*) _tokenize(char *str, Token *token) {
         return (Either(Token*)) {.left = NULL, .right = (RIGHT_T *) root_token};
     }
 
-    if (isspace(str[0])) return _tokenize(str + 1, token);
+    if (isspace(str[0]) || str[0] == '\n') return _tokenize(str + 1, token);
 
     if (issemicolon(str[0])) {
         return _tokenize(str + 1, ({
